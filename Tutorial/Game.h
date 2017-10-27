@@ -3,7 +3,7 @@
 #define WINDOW_SCREEN_WIDTH 640
 #define WINDOW_SCREEN_HEIGHT 432
 #define WINDOW_WIDTH 1600
-#define WINDOW_HEIGHT 1200
+#define WINDOW_HEIGHT 1000
 #define FRAMES_PER_SECOND 60
 
 #include "windows.h"

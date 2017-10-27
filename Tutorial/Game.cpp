@@ -32,14 +32,14 @@ void Game::initializeGame()
 	player.loadMesh("meshes/mainCharacter.obj");
 	monkey2.loadMesh("meshes/monkey.obj");
 
-	player.color = glm::vec4(1.f, 0.f, 0.f, 1.f);
-	monkey2.color = glm::vec4(0.f, 0.f, 1.f, 1.f);
+	player.color = glm::vec4(0.f, 0.f, 1.f, 1.f);
+	monkey2.color = glm::vec4(0.f, 1.f, 0.f, 1.f);
 
 
 	monkey2.transform = glm::translate(monkey2.transform, glm::vec3(3.f, 0.f, 0.f));
 
-	cameraTransform = glm::rotate(cameraTransform, glm::radians(60.0f), glm::vec3(1.f, 0.f, 0.f));
-	cameraTransform = glm::translate(cameraTransform, glm::vec3(0.f, -5.f, -3.f));
+	cameraTransform = glm::rotate(cameraTransform, glm::radians(70.0f), glm::vec3(1.f, 0.f, 0.f));
+	cameraTransform = glm::translate(cameraTransform, glm::vec3(0.f, -5.f, -1.82f));
 	cameraProjection = glm::perspective(glm::radians(90.f),
 		(float)WINDOW_WIDTH / (float)WINDOW_HEIGHT,
 		0.1f, 10000.f);
@@ -188,7 +188,7 @@ void Game::mousePassive(int x, int y)
 		//updateTimer->getElapsedTimeSec() * glm::degrees(glm::dot(glm::vec2( 0.f, 1.f ), glm::normalize(glm::vec2( (float)(x - WINDOW_WIDTH/2), (float)(WINDOW_HEIGHT/2 - y) )))),
 		(float)atan2(WINDOW_HEIGHT / 2 - y, x - WINDOW_WIDTH / 2),
 		glm::vec3(0.f, 1.f, 0.f));
-	std::cout << glm::degrees(glm::dot(glm::vec2(0.f, 1.f), glm::normalize(glm::vec2((float)(x - WINDOW_WIDTH / 2), (float)(WINDOW_HEIGHT / 2 - y))))) << std::endl;
+	//std::cout << glm::degrees((float)atan2(WINDOW_HEIGHT / 2 - y, x - WINDOW_WIDTH / 2)) << std::endl;
 	//std::cout << glm::normalize(glm::vec2((float)x, (float)y)).x << " / " << glm::normalize(glm::vec2((float)x, (float)y)).y << std::endl;
 	//std::cout << (x - WINDOW_WIDTH / 2)  << " / " << (WINDOW_HEIGHT / 2 - y) << std::endl;
 
