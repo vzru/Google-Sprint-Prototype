@@ -44,22 +44,15 @@ void GameObject::draw(ShaderProgram &shader, glm::mat4 &cameraTransform, glm::ma
 	shader.sendUniformMat4("uView", glm::value_ptr(cameraTransform), false);
 	shader.sendUniformMat4("uProj", glm::value_ptr(cameraProjection), false);
 
-	double dArray[16] = { 0.0 };
-
-	const float *pSource = (const float*)glm::value_ptr(cameraTransform);
-	for (int i = 0; i < 16; ++i)
-	{
-		dArray[i] = pSource[i];
-		if (i % 4 == 3)
-		{
-			std::cout << dArray[i] << std::endl;
-		}
-		else
-		{
-			std::cout << dArray[i] << ' ';
-		}
-	}
-	std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
+	//double dArray[16] = { 0.0 };
+	//const float *pSource = (const float*)glm::value_ptr(cameraTransform);
+	//for (int i = 0; i < 16; ++i0_ {
+	//	dArray[i] = pSource[i];
+	//	if (i % 4 == 3)
+	//		std::cout << dArray[i] << std::endl;
+	//	else
+	//		std::cout << dArray[i] << ' ';
+	//std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
 
 	shader.sendUniform("uTex", 0);
 
