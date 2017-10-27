@@ -30,13 +30,13 @@ void Game::initializeGame()
 
 
 	player.loadMesh("meshes/mainCharacter.obj");
-	monkey2.loadMesh("meshes/monkey.obj");
+	level.loadMesh("meshes/twin box.obj");
 
-	player.color = glm::vec4(0.f, 0.f, 1.f, 1.f);
-	monkey2.color = glm::vec4(0.f, 1.f, 0.f, 1.f);
+	player.color = glm::vec4(1.f, 0.f, 0.f, 1.f);
+	level.color = glm::vec4(0.f, 1.f, 0.f, 1.f);
 
 
-	monkey2.transform = glm::translate(monkey2.transform, glm::vec3(3.f, 0.f, 0.f));
+	level.transform = glm::translate(level.transform, glm::vec3(3.f, 0.f, 0.f));
 
 	cameraTransform = glm::rotate(cameraTransform, glm::radians(70.0f), glm::vec3(1.f, 0.f, 0.f));
 	cameraTransform = glm::translate(cameraTransform, glm::vec3(0.f, -5.f, -1.82f));
@@ -61,28 +61,31 @@ void Game::update()
 	}
 	if (wKeydown)
 	{
-		player.translate = glm::translate(player.translate, glm::vec3(0.f, 0.f, -deltaTime));
-		cameraTransform = glm::translate(cameraTransform, glm::vec3(0.f, 0.f, deltaTime));
+		player.translate = glm::translate(player.translate, glm::vec3(0.f, 0.f, -deltaTime*3));
+		cameraTransform = glm::translate(cameraTransform, glm::vec3(0.f, 0.f, deltaTime * 3));
 
 	}
 	if (aKeydown)
 	{
-		player.translate = glm::translate(player.translate, glm::vec3(-deltaTime, 0.f, 0.f));
-		cameraTransform = glm::translate(cameraTransform, glm::vec3(deltaTime, 0.f, 0.f));
+		player.translate = glm::translate(player.translate, glm::vec3(-deltaTime * 3, 0.f, 0.f));
+		cameraTransform = glm::translate(cameraTransform, glm::vec3(deltaTime * 3, 0.f, 0.f));
 
 	}
 	if (sKeydown)
 	{
-		player.translate = glm::translate(player.translate, glm::vec3(0.f, 0.f, deltaTime));
-		cameraTransform = glm::translate(cameraTransform, glm::vec3(0.f, 0.f, -deltaTime));
+		player.translate = glm::translate(player.translate, glm::vec3(0.f, 0.f, deltaTime * 3));
+		cameraTransform = glm::translate(cameraTransform, glm::vec3(0.f, 0.f, -deltaTime * 3));
 
 	}
 	if (dKeydown)
 	{
-		player.translate = glm::translate(player.translate, glm::vec3(deltaTime, 0.f, 0.f));
-		cameraTransform = glm::translate(cameraTransform, glm::vec3(-deltaTime, 0.f, 0.f));
+		player.translate = glm::translate(player.translate, glm::vec3(deltaTime * 3, 0.f, 0.f));
+		cameraTransform = glm::translate(cameraTransform, glm::vec3(-deltaTime * 3, 0.f, 0.f));
 
 	}
+
+	collision.collided(player, glm::vec2(-0.5f, 2.5f), glm::vec2(0.5f, 3.5f));
+
 	// F = T * R * S;
 	player.transform = player.translate * player.rotate * glm::scale(glm::mat4(), glm::vec3(player.scale));
 }
@@ -93,10 +96,9 @@ void Game::draw()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	player.draw(Phong, cameraTransform, cameraProjection);
-	monkey2.draw(Phong, cameraTransform, cameraProjection);
+	level.draw(Phong, cameraTransform, cameraProjection);
 
 	glutSwapBuffers();
-
 }
 
 void Game::keyboardDown(unsigned char key, int mouseX, int mouseY)

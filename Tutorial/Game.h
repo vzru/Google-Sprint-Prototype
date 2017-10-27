@@ -12,6 +12,7 @@
 #include "ShaderProgram.h"
 #include "GameObject.h"
 #include "Texture.h"
+#include "Collision.h"
 
 #include <GL\GL.h>
 #include <GL\GLU.h>
@@ -36,7 +37,8 @@ public:
 
 	Timer* updateTimer = nullptr;
 	float totalGameTime = 0.0f;
-	GameObject player, monkey2;
+	GameObject player, level;
+	Collision collision;
 
 	//ShaderProgram passThrough;
 	//ShaderProgram PhongNoTexture;
@@ -46,7 +48,7 @@ public:
 	glm::mat4 cameraProjection;
 
 	//Mesh monkey;
-	//Mesh monkey2;
+	//Mesh level;
 	//glm::mat4 monkeyTransform;
 	//glm::mat4 monkeyRotate;
 	//glm::mat4 monkeyTranslate;
