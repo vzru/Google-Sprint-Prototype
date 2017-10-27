@@ -2,8 +2,8 @@
 
 #define WINDOW_SCREEN_WIDTH 640
 #define WINDOW_SCREEN_HEIGHT 432
-#define WINDOW_WIDTH 800
-#define WINDOW_HEIGHT 600
+#define WINDOW_WIDTH 1600
+#define WINDOW_HEIGHT 1200
 #define FRAMES_PER_SECOND 60
 
 #include "windows.h"
@@ -32,11 +32,11 @@ public:
 	void keyboardDown(unsigned char key, int mouseX, int mouseY);
 	void keyboardUp(unsigned char key, int mouseX, int mouseY);
 	void mouseClicked(int button, int state, int x, int y);
-	void mouseMoved(int x, int y);
+	void mousePassive(int x, int y);
 
 	Timer* updateTimer = nullptr;
 	float totalGameTime = 0.0f;
-	GameObject monkey1, monkey2;
+	GameObject player, monkey2;
 
 	//ShaderProgram passThrough;
 	//ShaderProgram PhongNoTexture;

@@ -39,9 +39,9 @@ void MouseClickCallbackFunction(int button, int state, int x, int y)
 	game->mouseClicked(button, state, x, y);
 }
 
-void MouseMoveCallbackFunction(int x, int y)
+void MousePassiveCallbackFunction(int x, int y)
 {
-	game->mouseMoved(x, y);
+	game->mousePassive(x, y);
 }
 
 int main(int argc, char **argv)
@@ -67,7 +67,7 @@ int main(int argc, char **argv)
 	glutKeyboardFunc(KeyboardDownCallbackFunction);
 	glutKeyboardUpFunc(KeyboardUpCallbackFunction);
 	glutMouseFunc(MouseClickCallbackFunction);
-	glutMotionFunc(MouseMoveCallbackFunction);
+	glutPassiveMotionFunc(MousePassiveCallbackFunction);
 	glutTimerFunc(1, TimerCallbackFunction, 0);
 
 	game = new Game();

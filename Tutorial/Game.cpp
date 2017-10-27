@@ -12,10 +12,7 @@ Game::Game()
 Game::~Game()
 {
 	delete updateTimer;
-	// passThrough.unload();
-	// PhongNoTexture.unload();
 	Phong.unload();
-	//monkey.unload();
 }
 
 void Game::initializeGame()
@@ -24,57 +21,29 @@ void Game::initializeGame()
 
 	glEnable(GL_DEPTH_TEST);
 
-	if (!Phong.load("shaders/Phong.vert", "shaders/Phong.frag"))
+	if (!Phong.load("shaders/Phong.vert", "shaders/PhongNoTexture.frag"))
 	{
 		std::cout << "Shaders failed to initialize." << std::endl;
 		system("pause");
 		exit(0);
 	}
 
-	//Mesh monkey;
-	//if (!monkey.loadFromFile("meshes/monkey.obj"))
-	//{
-	//	std::cout << "Model failed to load." << std::endl;
-	//	system("pause");
-	//	exit(0);
-	//}
 
-
-	//monkey1 = GameObject(monkey);
-	monkey1.loadMesh("meshes/monkey.obj");
-	monkey1.loadTexture("textures/fur.png");
-	//monkey2 = GameObject(monkey);
+	player.loadMesh("meshes/mainCharacter.obj");
 	monkey2.loadMesh("meshes/monkey.obj");
-	monkey2.loadTexture("textures/fur.png");
-	monkey1.color = glm::vec4(1.f, 0.f, 0.f, 1.f);
+
+	player.color = glm::vec4(1.f, 0.f, 0.f, 1.f);
 	monkey2.color = glm::vec4(0.f, 0.f, 1.f, 1.f);
 
 
 	monkey2.transform = glm::translate(monkey2.transform, glm::vec3(3.f, 0.f, 0.f));
-	//
-	//if (!monkey2.loadFromFile("meshes/Monkey.obj"))
-	//{
-	//	std::cout << "Model failed to load." << std::endl;
-	//	system("pause");
-	//	exit(0);
-	//}
-	//
 
-	cameraTransform = glm::translate(cameraTransform, glm::vec3(0.f, 0.f, -5.f));
-	cameraProjection = glm::perspective(45.f,
+	cameraTransform = glm::rotate(cameraTransform, glm::radians(60.0f), glm::vec3(1.f, 0.f, 0.f));
+	cameraTransform = glm::translate(cameraTransform, glm::vec3(0.f, -5.f, -3.f));
+	cameraProjection = glm::perspective(glm::radians(90.f),
 		(float)WINDOW_WIDTH / (float)WINDOW_HEIGHT,
 		0.1f, 10000.f);
 
-	//monkey.loadFromFile("meshes/Monkey.obj");
-	//
-	//std::cout << "Monkey faces: " << monkey.getNumFaces() << 
-	//	" Vertices: " << monkey.getNumVertices() << std::endl;
-	//
-	//system("pause");
-	//
-	//monkey.unload();
-	//
-	//std::cout << "unloaded." << std::endl;
 }
 
 void Game::update()
@@ -86,40 +55,36 @@ void Game::update()
 
 	if (shouldRotate)
 	{
-		monkey1.rotate = glm::rotate(monkey1.rotate,
+		player.rotate = glm::rotate(player.rotate,
 			deltaTime * (glm::pi<float>() / 4.f),
 			glm::vec3(0.f, 1.f, 0.f));
 	}
 	if (wKeydown)
 	{
-		monkey1.translate = glm::translate(monkey1.translate, glm::vec3(0.f, deltaTime, 0.f));
+		player.translate = glm::translate(player.translate, glm::vec3(0.f, 0.f, -deltaTime));
+		cameraTransform = glm::translate(cameraTransform, glm::vec3(0.f, 0.f, deltaTime));
+
 	}
 	if (aKeydown)
 	{
-		monkey1.translate = glm::translate(monkey1.translate, glm::vec3(-deltaTime, 0.f, 0.f));
+		player.translate = glm::translate(player.translate, glm::vec3(-deltaTime, 0.f, 0.f));
+		cameraTransform = glm::translate(cameraTransform, glm::vec3(deltaTime, 0.f, 0.f));
+
 	}
 	if (sKeydown)
 	{
-		monkey1.translate = glm::translate(monkey1.translate, glm::vec3(0.f, -deltaTime, 0.f));
+		player.translate = glm::translate(player.translate, glm::vec3(0.f, 0.f, deltaTime));
+		cameraTransform = glm::translate(cameraTransform, glm::vec3(0.f, 0.f, -deltaTime));
+
 	}
 	if (dKeydown)
 	{
-		monkey1.translate = glm::translate(monkey1.translate, glm::vec3(deltaTime, 0.f, 0.f));
-	}
-	if (oKeydown)
-	{
-		monkey1.scale -= deltaTime;
-	}
-	if (pKeydown)
-	{
-		monkey1.scale += deltaTime;
-	}
-	if (monkey1.scale <= 0.f)
-	{
-		monkey1.scale = 0.f;
+		player.translate = glm::translate(player.translate, glm::vec3(deltaTime, 0.f, 0.f));
+		cameraTransform = glm::translate(cameraTransform, glm::vec3(-deltaTime, 0.f, 0.f));
+
 	}
 	// F = T * R * S;
-	monkey1.transform = monkey1.translate * monkey1.rotate * glm::scale(glm::mat4(), glm::vec3(monkey1.scale));
+	player.transform = player.translate * player.rotate * glm::scale(glm::mat4(), glm::vec3(player.scale));
 }
 
 void Game::draw()
@@ -127,62 +92,9 @@ void Game::draw()
 	glClearColor(0, 0, 0, 0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	monkey1.draw(Phong, cameraTransform, cameraProjection);
+	player.draw(Phong, cameraTransform, cameraProjection);
 	monkey2.draw(Phong, cameraTransform, cameraProjection);
 
-
-	//// render stuff
-	//PhongNoTexture.bind();
-	//PhongNoTexture.sendUniformMat4("uModel", glm::value_ptr(monkeyTransform), false);
-	//PhongNoTexture.sendUniformMat4("uView", glm::value_ptr(cameraTransform), false);
-	//PhongNoTexture.sendUniformMat4("uProj", glm::value_ptr(cameraProjection), false);
-	//
-	//
-	//
-	//PhongNoTexture.sendUniform("lightPos", glm::vec4(4.f, 0.f, 0.f, 1.f));
-	//PhongNoTexture.sendUniform("objectColor", glm::vec4(0.5f, 0.5f, 1.f, 1.f));
-	//PhongNoTexture.sendUniform("lightAmbient", glm::vec3(0.15f, 0.15f, 0.15f));
-	//PhongNoTexture.sendUniform("lightDiffuse", glm::vec3(0.7f, 0.7f, 0.7f));
-	//PhongNoTexture.sendUniform("lightSpecular", glm::vec3(1.f, 1.f, 1.f));
-	//PhongNoTexture.sendUniform("lightSpecularExponent", 50.f);
-	//PhongNoTexture.sendUniform("attenuationConstant", 1.f);
-	//PhongNoTexture.sendUniform("attenuationLinear", 0.1f);
-	//PhongNoTexture.sendUniform("attenuationQuadratic", 0.01f);
-	//
-	//
-	//glBindVertexArray(monkey.vao);
-	//
-	//glDrawArrays(GL_TRIANGLES, 0, monkey.getNumVertices());
-	//
-	//glBindVertexArray(GL_NONE);
-	//
-	//PhongNoTexture.unbind();
-	//
-	//PhongNoTexture.bind();
-	//PhongNoTexture.sendUniformMat4("uModel", glm::value_ptr(monkey2Transform), false);
-	//PhongNoTexture.sendUniformMat4("uView", glm::value_ptr(cameraTransform), false);
-	//PhongNoTexture.sendUniformMat4("uProj", glm::value_ptr(cameraProjection), false);
-	//
-	//
-	//
-	//PhongNoTexture.sendUniform("lightPos", glm::vec4(4.f, 0.f, 0.f, 1.f));
-	//PhongNoTexture.sendUniform("objectColor", glm::vec4(0.5f, 0.5f, 1.f, 1.f));
-	//PhongNoTexture.sendUniform("lightAmbient", glm::vec3(0.15f, 0.15f, 0.15f));
-	//PhongNoTexture.sendUniform("lightDiffuse", glm::vec3(0.7f, 0.7f, 0.7f));
-	//PhongNoTexture.sendUniform("lightSpecular", glm::vec3(1.f, 1.f, 1.f));
-	//PhongNoTexture.sendUniform("lightSpecularExponent", 50.f);
-	//PhongNoTexture.sendUniform("attenuationConstant", 1.f);
-	//PhongNoTexture.sendUniform("attenuationLinear", 0.1f);
-	//PhongNoTexture.sendUniform("attenuationQuadratic", 0.01f);
-	//
-	//
-	//glBindVertexArray(monkey2.vao);
-	//
-	//glDrawArrays(GL_TRIANGLES, 0, monkey2.getNumVertices());
-	//
-	//glBindVertexArray(GL_NONE);
-	//
-	//PhongNoTexture.unbind();
 	glutSwapBuffers();
 
 }
@@ -270,6 +182,14 @@ void Game::mouseClicked(int button, int state, int x, int y)
 	}
 }
 
-void Game::mouseMoved(int x, int y)
+void Game::mousePassive(int x, int y)
 {
+	player.rotate = glm::rotate(glm::mat4(),
+		//updateTimer->getElapsedTimeSec() * glm::degrees(glm::dot(glm::vec2( 0.f, 1.f ), glm::normalize(glm::vec2( (float)(x - WINDOW_WIDTH/2), (float)(WINDOW_HEIGHT/2 - y) )))),
+		(float)atan2(WINDOW_HEIGHT / 2 - y, x - WINDOW_WIDTH / 2),
+		glm::vec3(0.f, 1.f, 0.f));
+	std::cout << glm::degrees(glm::dot(glm::vec2(0.f, 1.f), glm::normalize(glm::vec2((float)(x - WINDOW_WIDTH / 2), (float)(WINDOW_HEIGHT / 2 - y))))) << std::endl;
+	//std::cout << glm::normalize(glm::vec2((float)x, (float)y)).x << " / " << glm::normalize(glm::vec2((float)x, (float)y)).y << std::endl;
+	//std::cout << (x - WINDOW_WIDTH / 2)  << " / " << (WINDOW_HEIGHT / 2 - y) << std::endl;
+
 }
