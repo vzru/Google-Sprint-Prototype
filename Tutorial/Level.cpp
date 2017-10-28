@@ -259,18 +259,22 @@ bool LevelHitBox::loadFromFile(const std::string & file) {
 	for (auto& face : faceData)
 	{
 		Face temp;
+		glm::vec3 vertex = vertexData[face.p[0] - 1];
+		temp.min = { vertex.x - radius, vertex.z - radius };
+		temp.max = { vertex.x + radius, vertex.z + radius };
 		for (unsigned int j = 0; j < 4; j++)
 		{
-			glm::vec3 vertex = vertexData[face.p[j] - 1];
-			if (temp.min.x > vertex.x && temp.min.y > vertex.z) {
+			vertex = vertexData[face.p[j] - 1];
+			if (temp.min.x > vertex.x - radius && temp.min.y > vertex.z - radius) {
 				temp.min.x = vertex.x - radius;
 				temp.min.y = vertex.z - radius;
 			}
-			if (temp.max.x < vertex.x && temp.max.y < vertex.z) {
+			if (temp.max.x < vertex.x + radius && temp.max.y < vertex.z + radius) {
 				temp.max.x = vertex.x + radius;
 				temp.max.y = vertex.z + radius;
 			}
 		}
+		cout << temp.min.x << "," << temp.min.y << " : " << temp.max.x << "," << temp.max.y << endl;
 		hitBoxes.push_back(temp);
 	}
 

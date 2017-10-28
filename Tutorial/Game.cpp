@@ -40,7 +40,7 @@ void Game::initializeGame()
 	//}
 
 	level = LevelHitBox(PLAYER_RADIUS);
-	level.loadFromFile("meshes/Plane.obj");
+	level.loadFromFile("meshes/Tutorial room Hitboxes.obj");
 	//monkey1 = GameObject(monkey);
 	monkey1.loadMesh("meshes/monkey.obj");
 	monkey1.loadTexture("textures/fur.png");
