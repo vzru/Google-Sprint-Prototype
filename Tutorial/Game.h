@@ -5,6 +5,7 @@
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600
 #define FRAMES_PER_SECOND 60
+#define PLAYER_RADIUS 0.5f
 
 #include "windows.h"
 #include "Mesh.h"

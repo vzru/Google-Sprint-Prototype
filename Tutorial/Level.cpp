@@ -195,6 +195,7 @@ bool LevelMesh::loadFromFile(const std::string & file) {
 }
 
 
+LevelHitBox::LevelHitBox(float r) : radius(r) {}
 LevelHitBox::LevelHitBox() {}
 LevelHitBox::~LevelHitBox() {}
 
@@ -262,12 +263,12 @@ bool LevelHitBox::loadFromFile(const std::string & file) {
 		{
 			glm::vec3 vertex = vertexData[face.p[j] - 1];
 			if (temp.min.x > vertex.x && temp.min.y > vertex.z) {
-				temp.min.x = vertex.x;
-				temp.min.y = vertex.z;
+				temp.min.x = vertex.x - radius;
+				temp.min.y = vertex.z - radius;
 			}
 			if (temp.max.x < vertex.x && temp.max.y < vertex.z) {
-				temp.max.x = vertex.x;
-				temp.max.y = vertex.z;
+				temp.max.x = vertex.x + radius;
+				temp.max.y = vertex.z + radius;
 			}
 		}
 		hitBoxes.push_back(temp);

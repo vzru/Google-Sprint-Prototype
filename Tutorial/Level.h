@@ -30,6 +30,7 @@ struct Face {
 
 class LevelHitBox : public Mesh {
 public:
+	LevelHitBox(float r);
 	LevelHitBox();
 	~LevelHitBox();
 
@@ -37,4 +38,5 @@ public:
 	bool loadFromFile(const std::string &file);
 private:
 	std::vector<Face> hitBoxes;
+	float radius;
 };

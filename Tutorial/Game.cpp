@@ -39,7 +39,7 @@ void Game::initializeGame()
 	//	exit(0);
 	//}
 
-
+	level = LevelHitBox(PLAYER_RADIUS);
 	level.loadFromFile("meshes/Plane.obj");
 	//monkey1 = GameObject(monkey);
 	monkey1.loadMesh("meshes/monkey.obj");
