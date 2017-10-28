@@ -39,6 +39,8 @@ public:
 	float totalGameTime = 0.0f;
 	GameObject player, level;
 	Collision collision;
+	glm::vec2 minVector[2];
+	glm::vec2 maxVector[2];
 
 	//ShaderProgram passThrough;
 	//ShaderProgram PhongNoTexture;

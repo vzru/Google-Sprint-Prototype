@@ -29,12 +29,17 @@ void Game::initializeGame()
 	}
 
 
+
 	player.loadMesh("meshes/character model.obj");
 	level.loadMesh("meshes/twin box.obj");
 
-	player.color = glm::vec4(1.f, 0.f, 0.f, 1.f);
+	player.color = glm::vec4(1.f, 1.f, 1.f, 1.f);
 	level.color = glm::vec4(0.f, 1.f, 0.f, 1.f);
 
+	minVector[0] = glm::vec2(2.5f, -0.5f);
+	maxVector[0] = glm::vec2(3.5f, 0.5f);
+	minVector[1] = glm::vec2(4.5f, 1.5f);
+	maxVector[1] = glm::vec2(5.5f, 2.5f);
 
 	level.transform = glm::translate(level.transform, glm::vec3(3.f, 0.f, 0.f));
 
@@ -61,35 +66,36 @@ void Game::update()
 	}
 	if (wKeydown)
 	{
-		if (!collision.collided(player, glm::vec2(2.5f, -0.5f), glm::vec2(3.5f, 0.5f)) || collision.collideX && collision.yDir || collision.collideY )
-		{
-			player.translate = glm::translate(player.translate, glm::vec3(0.f, 0.f, -deltaTime * 3));
-			cameraTransform = glm::translate(cameraTransform, glm::vec3(0.f, 0.f, deltaTime * 3));
-		}
+			if (!collision.collidedBottom(player, &minVector[0], &maxVector[0]))
+			{
+				player.translate = glm::translate(player.translate, glm::vec3(0.f, 0.f, -deltaTime * 3));
+				cameraTransform = glm::translate(cameraTransform, glm::vec3(0.f, 0.f, deltaTime * 3));
+			}
 	}
 	if (aKeydown)
 	{
-		if (!collision.collided(player, glm::vec2(2.5f, -0.5f), glm::vec2(3.5f, 0.5f)) || collision.collideY && !collision.xDir || collision.collideX )
-		{
-			player.translate = glm::translate(player.translate, glm::vec3(-deltaTime * 3, 0.f, 0.f));
-			cameraTransform = glm::translate(cameraTransform, glm::vec3(deltaTime * 3, 0.f, 0.f));
-		}
+			if (!collision.collidedRight(player, &minVector[0], &maxVector[0]))
+			{
+				player.translate = glm::translate(player.translate, glm::vec3(-deltaTime * 3, 0.f, 0.f));
+				cameraTransform = glm::translate(cameraTransform, glm::vec3(deltaTime * 3, 0.f, 0.f));
+			}
 	}
 	if (sKeydown)
 	{
-		if (!collision.collided(player, glm::vec2(2.5f, -0.5f), glm::vec2(3.5f, 0.5f)) || collision.collideX && !collision.yDir || collision.collideY)
-		{
-			player.translate = glm::translate(player.translate, glm::vec3(0.f, 0.f, deltaTime * 3));
-			cameraTransform = glm::translate(cameraTransform, glm::vec3(0.f, 0.f, -deltaTime * 3));
-		}
+
+			if (!collision.collidedTop(player, &minVector[0], &maxVector[0]))
+			{
+				player.translate = glm::translate(player.translate, glm::vec3(0.f, 0.f, deltaTime * 3));
+				cameraTransform = glm::translate(cameraTransform, glm::vec3(0.f, 0.f, -deltaTime * 3));
+			}
 	}
 	if (dKeydown)
 	{
-		if (!collision.collided(player, glm::vec2(2.5f, -0.5f), glm::vec2(3.5f, 0.5f)) || collision.collideY && collision.xDir || collision.collideX)
-		{
-			player.translate = glm::translate(player.translate, glm::vec3(deltaTime * 3, 0.f, 0.f));
-			cameraTransform = glm::translate(cameraTransform, glm::vec3(-deltaTime * 3, 0.f, 0.f));
-		}
+			if (!collision.collidedLeft(player, &minVector[0], &maxVector[0]))
+			{
+				player.translate = glm::translate(player.translate, glm::vec3(deltaTime * 3, 0.f, 0.f));
+				cameraTransform = glm::translate(cameraTransform, glm::vec3(-deltaTime * 3, 0.f, 0.f));
+			}
 	}
 
 	//collision.collided(player, glm::vec2(2.5f, -0.5f), glm::vec2(3.5f, 0.5f));
