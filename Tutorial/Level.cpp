@@ -193,3 +193,86 @@ bool LevelMesh::loadFromFile(const std::string & file) {
 			ceiling.push_back({ vert.x, vert.z });
 	return true;
 }
+
+
+LevelHitBox::LevelHitBox() {}
+LevelHitBox::~LevelHitBox() {}
+
+bool LevelHitBox::loadFromFile(const std::string & file) {
+	std::ifstream input;
+	input.open(file);
+	if (!input) {
+		std::cout << "Level.loadFromFile: Could not open the file " << file << std::endl;
+		return false;
+	}
+
+	std::string inputString;
+
+	vector<glm::vec3> vertexData;
+	
+	// Index
+	struct quad { unsigned int p[4]; };
+	vector<quad> faceData;
+
+	while (getline(input, inputString))
+	{
+		if (inputString[0] == '#')
+		{
+			cout << "Comment: " << inputString << endl;
+			// this line is a comment so skip
+			continue;
+		}
+		else if (inputString[0] == 'v')
+		{
+			if (inputString[1] == ' ')
+			{
+				// this is a vertex data
+				glm::vec3 temp;
+
+				sscanf(inputString.c_str(), "v %f %f %f", &temp.x, &temp.y, &temp.z);
+
+				vertexData.push_back(temp);
+			}
+		}
+		else if (inputString[0] == 'f')
+		{
+			// this is face data
+			quad temp;
+
+			sscanf(inputString.c_str(), "f %u %u %u %u",
+				&temp.p[0], &temp.p[1], &temp.p[2], &temp.p[3]);
+
+			faceData.push_back(temp);
+		}
+		else
+		{
+			cout << "Line not recognized, skipping: " << inputString << endl;
+			continue;
+		}
+	}
+
+	input.close();
+
+	// unpack data
+
+	for (auto& face : faceData)
+	{
+		Face temp;
+		for (unsigned int j = 0; j < 4; j++)
+		{
+			glm::vec3 vertex = vertexData[face.p[j] - 1];
+			if (temp.min.x > vertex.x && temp.min.y > vertex.z) {
+				temp.min.x = vertex.x;
+				temp.min.y = vertex.z;
+			}
+			if (temp.max.x < vertex.x && temp.max.y < vertex.z) {
+				temp.max.x = vertex.x;
+				temp.max.y = vertex.z;
+			}
+		}
+		hitBoxes.push_back(temp);
+	}
+
+	numFaces = faceData.size();
+	numVertices = numFaces * 4;
+}

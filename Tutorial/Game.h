@@ -12,11 +12,11 @@
 #include "ShaderProgram.h"
 #include "GameObject.h"
 #include "Texture.h"
+#include "Level.h"
 
 #include <GL\GL.h>
 #include <GL\GLU.h>
 #include <GL\glut.h>
-
 
 class Game
 {
@@ -34,6 +34,7 @@ public:
 	void mouseClicked(int button, int state, int x, int y);
 	void mouseMoved(int x, int y);
 
+	LevelHitBox level;
 	Timer* updateTimer = nullptr;
 	float totalGameTime = 0.0f;
 	GameObject monkey1, monkey2;

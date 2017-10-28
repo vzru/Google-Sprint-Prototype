@@ -40,6 +40,7 @@ void Game::initializeGame()
 	//}
 
 
+	level.loadFromFile("meshes/Plane.obj");
 	//monkey1 = GameObject(monkey);
 	monkey1.loadMesh("meshes/monkey.obj");
 	monkey1.loadTexture("textures/fur.png");
