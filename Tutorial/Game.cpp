@@ -32,6 +32,8 @@ void Game::initializeGame()
 
 	player.loadMesh("meshes/character model.obj");
 	level.loadMesh("meshes/twin box.obj");
+	level = LevelHitBox(PLAYER_RADIUS);
+	level.loadFromFile("meshes/Tutorial room Hitboxes.obj");
 
 	player.color = glm::vec4(1.f, 1.f, 1.f, 1.f);
 	level.color = glm::vec4(0.f, 1.f, 0.f, 1.f);

@@ -5,6 +5,7 @@
 #define WINDOW_WIDTH 1600
 #define WINDOW_HEIGHT 1000
 #define FRAMES_PER_SECOND 60
+#define PLAYER_RADIUS 0.5f
 
 #include "windows.h"
 #include "Mesh.h"
@@ -13,11 +14,11 @@
 #include "GameObject.h"
 #include "Texture.h"
 #include "Collision.h"
+#include "Level.h"
 
 #include <GL\GL.h>
 #include <GL\GLU.h>
 #include <GL\glut.h>
-
 
 class Game
 {
@@ -35,6 +36,7 @@ public:
 	void mouseClicked(int button, int state, int x, int y);
 	void mousePassive(int x, int y);
 
+	LevelHitBox level;
 	Timer* updateTimer = nullptr;
 	float totalGameTime = 0.0f;
 	GameObject player, level;
