@@ -110,7 +110,7 @@ bool Collision::collidedRight(GameObject & player, glm::vec2 * min, glm::vec2 * 
 	for (int i = 0; i < 2; i++)
 	{
 		bool collide = collided(player, min[i], max[i]);
-		std::cout << i << '=' << collideX << '-' << xDir << '/' << collideY << '-' << yDir << std::endl;
+		//std::cout << i << '=' << collideX << '-' << xDir << '/' << collideY << '-' << yDir << std::endl;
 		if (!collide || collideX || collideY && !xDir)
 		{
 			collideA = false;
@@ -148,7 +148,7 @@ bool Collision::collidedLeft(GameObject & player, glm::vec2 * min, glm::vec2 * m
 	for (int i = 0; i < 2; i++)
 	{
 		bool collide = collided(player, min[i], max[i]);
-		std::cout << i << '=' << collideX << '-' << xDir << '/' << collideY << '-' << yDir << std::endl;
+		//std::cout << i << '=' << collideX << '-' << xDir << '/' << collideY << '-' << yDir << std::endl;
 		if (!collide || collideX || collideY && xDir)
 		{
 			collideD = false;
