@@ -29,7 +29,7 @@ void Game::initializeGame()
 	}
 
 
-	player.loadMesh("meshes/mainCharacter.obj");
+	player.loadMesh("meshes/character model.obj");
 	level.loadMesh("meshes/twin box.obj");
 
 	player.color = glm::vec4(1.f, 0.f, 0.f, 1.f);
@@ -61,7 +61,7 @@ void Game::update()
 	}
 	if (wKeydown)
 	{
-		if (!collision.collided(player, glm::vec2(2.5f, -0.5f), glm::vec2(3.5f, 0.5f)) || !collision.collideX && collision.xDir)
+		if (!collision.collided(player, glm::vec2(2.5f, -0.5f), glm::vec2(3.5f, 0.5f)) || collision.collideX && collision.yDir || collision.collideY )
 		{
 			player.translate = glm::translate(player.translate, glm::vec3(0.f, 0.f, -deltaTime * 3));
 			cameraTransform = glm::translate(cameraTransform, glm::vec3(0.f, 0.f, deltaTime * 3));
@@ -69,7 +69,7 @@ void Game::update()
 	}
 	if (aKeydown)
 	{
-		if (!collision.collided(player, glm::vec2(2.5f, -0.5f), glm::vec2(3.5f, 0.5f)) || !collision.collideY && collision.yDir)
+		if (!collision.collided(player, glm::vec2(2.5f, -0.5f), glm::vec2(3.5f, 0.5f)) || collision.collideY && !collision.xDir || collision.collideX )
 		{
 			player.translate = glm::translate(player.translate, glm::vec3(-deltaTime * 3, 0.f, 0.f));
 			cameraTransform = glm::translate(cameraTransform, glm::vec3(deltaTime * 3, 0.f, 0.f));
@@ -77,7 +77,7 @@ void Game::update()
 	}
 	if (sKeydown)
 	{
-		if (!collision.collided(player, glm::vec2(2.5f, -0.5f), glm::vec2(3.5f, 0.5f)) || !collision.collideX && !collision.xDir)
+		if (!collision.collided(player, glm::vec2(2.5f, -0.5f), glm::vec2(3.5f, 0.5f)) || collision.collideX && !collision.yDir || collision.collideY)
 		{
 			player.translate = glm::translate(player.translate, glm::vec3(0.f, 0.f, deltaTime * 3));
 			cameraTransform = glm::translate(cameraTransform, glm::vec3(0.f, 0.f, -deltaTime * 3));
@@ -85,7 +85,7 @@ void Game::update()
 	}
 	if (dKeydown)
 	{
-		if (!collision.collided(player, glm::vec2(2.5f, -0.5f), glm::vec2(3.5f, 0.5f)) || !collision.collideY && !collision.yDir)
+		if (!collision.collided(player, glm::vec2(2.5f, -0.5f), glm::vec2(3.5f, 0.5f)) || collision.collideY && collision.xDir || collision.collideX)
 		{
 			player.translate = glm::translate(player.translate, glm::vec3(deltaTime * 3, 0.f, 0.f));
 			cameraTransform = glm::translate(cameraTransform, glm::vec3(-deltaTime * 3, 0.f, 0.f));
