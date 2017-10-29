@@ -37,7 +37,7 @@ public:
 
 	Timer* updateTimer = nullptr;
 	float totalGameTime = 0.0f;
-	GameObject player, level;
+	GameObject player, level, levelHitBox;
 	Collision collision;
 	glm::vec2 minVector[2];
 	glm::vec2 maxVector[2];

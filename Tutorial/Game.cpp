@@ -28,23 +28,24 @@ void Game::initializeGame()
 		exit(0);
 	}
 
-
-
 	player.loadMesh("meshes/character model.obj");
-	level.loadMesh("meshes/twin box.obj");
+	level.loadMesh("meshes/Tutorial Room Base.obj");
+	levelHitBox.loadMesh("meshes/Tutorial room Hitboxes Triangulate.obj");
 
 	player.color = glm::vec4(1.f, 1.f, 1.f, 1.f);
 	level.color = glm::vec4(0.f, 1.f, 0.f, 1.f);
+	levelHitBox.color = glm::vec4(1.f, 0.f, 0.f, 1.f);
 
-	minVector[0] = glm::vec2(2.5f, -0.5f);
-	maxVector[0] = glm::vec2(3.5f, 0.5f);
-	minVector[1] = glm::vec2(4.5f, 1.5f);
-	maxVector[1] = glm::vec2(5.5f, 2.5f);
+	//minVector[0] = glm::vec2(2.5f, -0.5f);
+	//maxVector[0] = glm::vec2(3.5f, 0.5f);
+	//minVector[1] = glm::vec2(4.5f, 1.5f);
+	//maxVector[1] = glm::vec2(5.5f, 2.5f);
 
-	level.transform = glm::translate(level.transform, glm::vec3(3.f, 0.f, 0.f));
+	player.translate = glm::translate(player.translate, glm::vec3(10.f, 0.f, 10.f));
+	levelHitBox.transform = glm::translate(levelHitBox.transform, glm::vec3(0.f, -5.f, 0.f));
 
 	cameraTransform = glm::rotate(cameraTransform, glm::radians(70.0f), glm::vec3(1.f, 0.f, 0.f));
-	cameraTransform = glm::translate(cameraTransform, glm::vec3(0.f, -5.f, -1.82f));
+	cameraTransform = glm::translate(cameraTransform, glm::vec3(0.f, -10.f, -1.82f));
 	cameraProjection = glm::perspective(glm::radians(90.f),
 		(float)WINDOW_WIDTH / (float)WINDOW_HEIGHT,
 		0.1f, 10000.f);
@@ -113,6 +114,8 @@ void Game::draw()
 
 	player.draw(Phong, cameraTransform, cameraProjection);
 	level.draw(Phong, cameraTransform, cameraProjection);
+	levelHitBox.draw(Phong, cameraTransform, cameraProjection);
+
 
 	glutSwapBuffers();
 }

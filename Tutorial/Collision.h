@@ -11,7 +11,6 @@ public:
 
 	bool collided(GameObject player, glm::vec2 v1, glm::vec2 v2);
 	
-	void updateCollided();
 	bool collidedBottom(GameObject &player, glm::vec2 *min, glm::vec2 *max);
 	bool collidedRight(GameObject &player, glm::vec2 *min, glm::vec2 *max);
 	bool collidedTop(GameObject &player, glm::vec2 *min, glm::vec2 *max);
@@ -25,7 +24,4 @@ private:
 	bool collideA = false;
 	bool collideS = false;
 	bool collideD = false;
-
-	
-	glm::vec2 cDir;
 };
