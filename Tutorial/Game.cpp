@@ -43,7 +43,7 @@ void Game::initializeGame()
 	player.translate = glm::translate(player.translate, { 11.f, 0.f, 11.f });
 
 	cameraTransform = glm::rotate(cameraTransform, glm::radians(70.0f), glm::vec3(1.f, 0.f, 0.f));
-	cameraTransform = glm::translate(cameraTransform, glm::vec3(-11.f, -8.f, -12.18f));
+	cameraTransform = glm::translate(cameraTransform, glm::vec3(-11.f, -5.f, -12.18f));
 	cameraProjection = glm::perspective(glm::radians(90.f),
 		(float)WINDOW_WIDTH / (float)WINDOW_HEIGHT,
 		0.1f, 10000.f);
@@ -112,7 +112,7 @@ void Game::draw()
 
 	player.draw(Phong, cameraTransform, cameraProjection);
 	level.draw(Phong, cameraTransform, cameraProjection);
-	hitboxes.draw(Phong, cameraTransform, cameraProjection);
+	//hitboxes.draw(Phong, cameraTransform, cameraProjection);
 
 	glutSwapBuffers();
 }

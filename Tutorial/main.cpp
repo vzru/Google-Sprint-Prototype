@@ -51,6 +51,7 @@ int main(int argc, char **argv)
 	glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
 	glutCreateWindow("Tutorial");
+	glutFullScreen();
 
 	glewExperimental = true;
 	if (glewInit() != GLEW_OK)
