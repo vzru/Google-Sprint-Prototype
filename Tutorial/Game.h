@@ -36,13 +36,11 @@ public:
 	void mouseClicked(int button, int state, int x, int y);
 	void mousePassive(int x, int y);
 
-	LevelHitBox level;
 	Timer* updateTimer = nullptr;
 	float totalGameTime = 0.0f;
-	GameObject player, level;
+	GameObject player, level, hitboxes;
+	LevelHitBox levelHitBox;
 	Collision collision;
-	glm::vec2 minVector[2];
-	glm::vec2 maxVector[2];
 
 	//ShaderProgram passThrough;
 	//ShaderProgram PhongNoTexture;

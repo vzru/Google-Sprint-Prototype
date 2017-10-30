@@ -11,7 +11,7 @@ Collision::~Collision()
 
 }
 
-bool Collision::collided(GameObject player, glm::vec2 v1, glm::vec2 v2)
+bool Collision::collided(GameObject &player, Face face)
 {
 	//double dArray[16] = { 0.0 };
 	//const float *pSource = (const float*)glm::value_ptr(player.transform);
@@ -30,10 +30,11 @@ bool Collision::collided(GameObject player, glm::vec2 v1, glm::vec2 v2)
 	//std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
 
 	glm::vec3 position(player.transform * glm::vec4(0.f, 0.f, 0.f, 1.f));
+	//position.z = -position.z;
 
 	//std::cout << position.x << " vs " << v1.x << " <> " << v2.x << ' ' << collideX << " / " << position.z << " vs " << v1.y << " <> " << v2.y << ' ' << collideY << " @ " << xDir << '/' << yDir << std::endl;
 
-	//std::cout << position.x << '/' << -(position.z) << std::endl;
+	std::cout << position.x << '/' << position.z << std::endl;
 
 	//if (!(position.x > v1.x && position.x < v2.x) && !(-position.z > v1.y && -position.z < v2.y))
 	//{
@@ -42,11 +43,13 @@ bool Collision::collided(GameObject player, glm::vec2 v1, glm::vec2 v2)
 	//	collideY = false;
 	//}
 
-	if ((position.x >= v1.x && position.x <= v2.x) && (-position.z >= v1.y && -position.z <= v2.y))
+	glm::vec2 v1 = face.min;
+	glm::vec2 v2 = face.max;
+	if ((position.x >= v1.x && position.x <= v2.x) && (position.z >= v1.y && position.z <= v2.y))
 	{
 		return true;
 	}
-	if (-position.z >= v1.y && -position.z <= v2.y)
+	if (position.z >= v1.y && position.z <= v2.y && (position.x - (v1.x + (v2.x - v1.x))) < 1.f)
 	{
 		collideY = true;
 		collideX = false;
@@ -64,19 +67,19 @@ bool Collision::collided(GameObject player, glm::vec2 v1, glm::vec2 v2)
 			return true;
 		}
 	}
-	if (position.x >= v1.x && position.x <= v2.x)
+	if (position.x >= v1.x && position.x <= v2.x && (position.y - (v1.y + (v2.y - v1.y))) < 1.f)
 	{
 		collideX = true;
 		collideY = false;
-		if (-position.z < (v1.y + (v2.y - v1.y) / 2))
+		if (position.z < (v1.y + (v2.y - v1.y) / 2))
 		{
 			yDir = false;
 		}
-		else if (-position.z > (v1.y + (v2.y - v1.y) / 2))
+		else if (position.z > (v1.y + (v2.y - v1.y) / 2))
 		{
 			yDir = true;
 		}
-		if (-(position.z) >= v1.y && -(position.z) <= v2.y)
+		if (position.z >= v1.y && position.z <= v2.y)
 		{
 			//std::cout << "Collided!" << std::endl;
 			return true;
@@ -85,12 +88,12 @@ bool Collision::collided(GameObject player, glm::vec2 v1, glm::vec2 v2)
 	return false;
 }
 
-bool Collision::collidedBottom(GameObject & player, glm::vec2 * min, glm::vec2 * max)
+bool Collision::collidedBottom(GameObject & player, std::vector<Face> faces)
 {
-	for (int i = 0; i < 2; i++)
+	for (auto& face : faces)
 	{
 		//std::cout << min[i].x << '/' << min[i].y << ' ' << max[i].x << '/' << max[i].y << std::endl;
-		bool collide = collided(player, min[i], max[i]);
+		bool collide = collided(player, face);
 		//std::cout << i << '=' << yDir << std::endl;
 		if (!collide || collideY || collideX && yDir)
 		{
@@ -105,11 +108,11 @@ bool Collision::collidedBottom(GameObject & player, glm::vec2 * min, glm::vec2 *
 	return collideW;
 }
 
-bool Collision::collidedRight(GameObject & player, glm::vec2 * min, glm::vec2 * max)
+bool Collision::collidedRight(GameObject & player, std::vector<Face> faces)
 {
-	for (int i = 0; i < 2; i++)
+	for (auto& face : faces)
 	{
-		bool collide = collided(player, min[i], max[i]);
+		bool collide = collided(player, face);
 		//std::cout << i << '=' << collideX << '-' << xDir << '/' << collideY << '-' << yDir << std::endl;
 		if (!collide || collideX || collideY && !xDir)
 		{
@@ -124,11 +127,11 @@ bool Collision::collidedRight(GameObject & player, glm::vec2 * min, glm::vec2 * 
 	return collideA;
 }
 
-bool Collision::collidedTop(GameObject & player, glm::vec2 * min, glm::vec2 * max)
+bool Collision::collidedTop(GameObject & player, std::vector<Face> faces)
 {
-	for (int i = 0; i < 2; i++)
+	for (auto& face : faces)
 	{
-		bool collide = collided(player, min[i], max[i]);
+		bool collide = collided(player, face);
 		//std::cout << i << '=' << yDir << std::endl;
 		if (!collide || collideY || collideX && !yDir)
 		{
@@ -143,11 +146,11 @@ bool Collision::collidedTop(GameObject & player, glm::vec2 * min, glm::vec2 * ma
 	return collideS;
 }
 
-bool Collision::collidedLeft(GameObject & player, glm::vec2 * min, glm::vec2 * max)
+bool Collision::collidedLeft(GameObject & player, std::vector<Face> faces)
 {
-	for (int i = 0; i < 2; i++)
+	for (auto& face : faces)
 	{
-		bool collide = collided(player, min[i], max[i]);
+		bool collide = collided(player, face);
 		//std::cout << i << '=' << collideX << '-' << xDir << '/' << collideY << '-' << yDir << std::endl;
 		if (!collide || collideX || collideY && xDir)
 		{
@@ -161,105 +164,3 @@ bool Collision::collidedLeft(GameObject & player, glm::vec2 * min, glm::vec2 * m
 	}
 	return collideD;
 }
-
-
-
-
-/*
-bool Collision::collided(GameObject player, glm::vec2 v1, glm::vec2 v2)
-{
-	//double dArray[16] = { 0.0 };
-	//const float *pSource = (const float*)glm::value_ptr(player.transform);
-	//for (int i = 0; i < 16; ++i)
-	//{
-	//	dArray[i] = pSource[i];
-	//	if (i % 4 == 3)
-	//	{
-	//		std::cout << dArray[i] << std::endl;
-	//	}
-	//	else
-	//	{
-	//		std::cout << dArray[i] << ' ';
-	//	}
-	//}
-	//std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
-
-	glm::vec3 position(player.transform * glm::vec4(0.f, 0.f, 0.f, 1.f));
-
-	//std::cout << position.x << " vs " << v1.x << " <> " << v2.x << ' ' << collideX << " / " << position.z << " vs " << v1.y << " <> " << v2.y << ' ' << collideY << " @ " << xDir << '/' << yDir << std::endl;
-
-	//std::cout << position.x << '/' << -(position.z) << std::endl;
-
-	if ((position.x >= v1.x && position.x <= v2.x) && (-position.z >= v1.y && -position.z <= v2.y))
-	{
-		return true;
-	}
-	cDir = { 0, 0 };
-	return false;
-}
-
-bool Collision::collidedBottom(GameObject & player, glm::vec2 * min, glm::vec2 * max)
-{
-	for (int i = 0; i < 2; i++)
-	{
-		//std::cout << min[i].x << '/' << min[i].y << ' ' << max[i].x << '/' << max[i].y << std::endl;
-		bool collide = collided(player, min[i], max[i]);
-		//std::cout << i << '=' << yDir << std::endl;
-		if (!collide || cDir.y != -1)
-		{
-			return false;
-		}
-	}
-	std::cout << "CollidedW!" << std::endl;
-	cDir.y = -1;
-	return true;
-}
-
-bool Collision::collidedRight(GameObject & player, glm::vec2 * min, glm::vec2 * max)
-{
-	for (int i = 0; i < 2; i++)
-	{
-		bool collide = collided(player, min[i], max[i]);
-		//std::cout << i << '=' << collideX << '/' << collideY << std::endl;
-		if (!collide || cDir.x != 1)
-		{
-			return false;
-		}
-	}
-	std::cout << "CollidedA!" << std::endl;
-	cDir.x = 1;
-	return true;
-}
-
-bool Collision::collidedTop(GameObject & player, glm::vec2 * min, glm::vec2 * max)
-{
-	for (int i = 0; i < 2; i++)
-	{
-		bool collide = collided(player, min[i], max[i]);
-		//std::cout << i << '=' << yDir << std::endl;
-		if (!collide || cDir.y != 1)
-		{
-			return false;
-		}
-	}
-	std::cout << "CollidedS!" << std::endl;
-	cDir.y = 1;
-	return true;
-}
-
-bool Collision::collidedLeft(GameObject & player, glm::vec2 * min, glm::vec2 * max)
-{
-	for (int i = 0; i < 2; i++)
-	{
-		bool collide = collided(player, min[i], max[i]);
-		std::cout << i << '=' << collideX << '/' << collideY << std::endl;
-		if (!collide || cDir.x != -1)
-		{
-			return false;
-		}
-	}
-	std::cout << "CollidedD!" << std::endl;
-	cDir.x = -1;
-	return true;
-}
-*/

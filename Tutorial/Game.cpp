@@ -29,24 +29,21 @@ void Game::initializeGame()
 	}
 
 
-
+	hitboxes.loadMesh("meshes/Tutorial room Hitboxes Triangulate.obj");
+	hitboxes.transform = glm::translate(hitboxes.transform, { 0, -4, 0 });
 	player.loadMesh("meshes/character model.obj");
-	level.loadMesh("meshes/twin box.obj");
-	level = LevelHitBox(PLAYER_RADIUS);
-	level.loadFromFile("meshes/Tutorial room Hitboxes.obj");
+	level.loadMesh("meshes/Tutorial room Base.obj");
+	levelHitBox = LevelHitBox(PLAYER_RADIUS);
+	levelHitBox.loadFromFile("meshes/Tutorial room Hitboxes.obj");
 
 	player.color = glm::vec4(1.f, 1.f, 1.f, 1.f);
+	hitboxes.color = glm::vec4(1.f, 0.f, 0.f, 1.f);
 	level.color = glm::vec4(0.f, 1.f, 0.f, 1.f);
 
-	minVector[0] = glm::vec2(2.5f, -0.5f);
-	maxVector[0] = glm::vec2(3.5f, 0.5f);
-	minVector[1] = glm::vec2(4.5f, 1.5f);
-	maxVector[1] = glm::vec2(5.5f, 2.5f);
-
-	level.transform = glm::translate(level.transform, glm::vec3(3.f, 0.f, 0.f));
+	player.translate = glm::translate(player.translate, { 11.f, 0.f, 11.f });
 
 	cameraTransform = glm::rotate(cameraTransform, glm::radians(70.0f), glm::vec3(1.f, 0.f, 0.f));
-	cameraTransform = glm::translate(cameraTransform, glm::vec3(0.f, -5.f, -1.82f));
+	cameraTransform = glm::translate(cameraTransform, glm::vec3(-11.f, -8.f, -12.18f));
 	cameraProjection = glm::perspective(glm::radians(90.f),
 		(float)WINDOW_WIDTH / (float)WINDOW_HEIGHT,
 		0.1f, 10000.f);
@@ -68,7 +65,7 @@ void Game::update()
 	}
 	if (wKeydown)
 	{
-			if (!collision.collidedBottom(player, &minVector[0], &maxVector[0]))
+			if (!collision.collidedBottom(player, levelHitBox.hitBoxes))
 			{
 				player.translate = glm::translate(player.translate, glm::vec3(0.f, 0.f, -deltaTime * 3));
 				cameraTransform = glm::translate(cameraTransform, glm::vec3(0.f, 0.f, deltaTime * 3));
@@ -76,7 +73,7 @@ void Game::update()
 	}
 	if (aKeydown)
 	{
-			if (!collision.collidedRight(player, &minVector[0], &maxVector[0]))
+			if (!collision.collidedRight(player, levelHitBox.hitBoxes))
 			{
 				player.translate = glm::translate(player.translate, glm::vec3(-deltaTime * 3, 0.f, 0.f));
 				cameraTransform = glm::translate(cameraTransform, glm::vec3(deltaTime * 3, 0.f, 0.f));
@@ -85,7 +82,7 @@ void Game::update()
 	if (sKeydown)
 	{
 
-			if (!collision.collidedTop(player, &minVector[0], &maxVector[0]))
+			if (!collision.collidedTop(player, levelHitBox.hitBoxes))
 			{
 				player.translate = glm::translate(player.translate, glm::vec3(0.f, 0.f, deltaTime * 3));
 				cameraTransform = glm::translate(cameraTransform, glm::vec3(0.f, 0.f, -deltaTime * 3));
@@ -93,7 +90,7 @@ void Game::update()
 	}
 	if (dKeydown)
 	{
-			if (!collision.collidedLeft(player, &minVector[0], &maxVector[0]))
+			if (!collision.collidedLeft(player, levelHitBox.hitBoxes))
 			{
 				player.translate = glm::translate(player.translate, glm::vec3(deltaTime * 3, 0.f, 0.f));
 				cameraTransform = glm::translate(cameraTransform, glm::vec3(-deltaTime * 3, 0.f, 0.f));
@@ -115,6 +112,7 @@ void Game::draw()
 
 	player.draw(Phong, cameraTransform, cameraProjection);
 	level.draw(Phong, cameraTransform, cameraProjection);
+	hitboxes.draw(Phong, cameraTransform, cameraProjection);
 
 	glutSwapBuffers();
 }

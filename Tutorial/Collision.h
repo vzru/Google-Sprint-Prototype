@@ -1,7 +1,7 @@
 
 #pragma once
 #include "GameObject.h"
-
+#include "Level.h"
 
 class Collision
 {
@@ -9,13 +9,11 @@ public:
 	Collision();
 	~Collision();
 
-	bool collided(GameObject player, glm::vec2 v1, glm::vec2 v2);
-	
-	void updateCollided();
-	bool collidedBottom(GameObject &player, glm::vec2 *min, glm::vec2 *max);
-	bool collidedRight(GameObject &player, glm::vec2 *min, glm::vec2 *max);
-	bool collidedTop(GameObject &player, glm::vec2 *min, glm::vec2 *max);
-	bool collidedLeft(GameObject &player, glm::vec2 *min, glm::vec2 *max);
+	bool collided(GameObject &player, Face face);
+	bool collidedBottom(GameObject &player, std::vector<Face> faces);
+	bool collidedRight(GameObject &player, std::vector<Face> faces);
+	bool collidedTop(GameObject &player, std::vector<Face> faces);
+	bool collidedLeft(GameObject &player, std::vector<Face> faces);
 private:
 	bool collideX;
 	bool collideY;
@@ -25,7 +23,4 @@ private:
 	bool collideA = false;
 	bool collideS = false;
 	bool collideD = false;
-
-	
-	glm::vec2 cDir;
 };
