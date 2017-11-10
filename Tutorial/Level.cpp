@@ -87,6 +87,8 @@ bool LevelHitBox::loadFromFile(const std::string & file) {
 				temp.max.y = vertex.z + radius;
 			}
 		}
+		temp.min.x += 2;
+		temp.max.x += 2;
 		cout << temp.min.x << "," << temp.min.y << " : " << temp.max.x << "," << temp.max.y << endl;
 		hitBoxes.push_back(temp);
 	}

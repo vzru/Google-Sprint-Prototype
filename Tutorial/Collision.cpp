@@ -34,7 +34,7 @@ bool Collision::collided(GameObject &player, Face face)
 
 	//std::cout << position.x << " vs " << v1.x << " <> " << v2.x << ' ' << collideX << " / " << position.z << " vs " << v1.y << " <> " << v2.y << ' ' << collideY << " @ " << xDir << '/' << yDir << std::endl;
 
-	std::cout << position.x << '/' << position.z << std::endl;
+	//std::cout << position.x << '/' << position.z << std::endl;
 
 	//if (!(position.x > v1.x && position.x < v2.x) && !(-position.z > v1.y && -position.z < v2.y))
 	//{
@@ -45,122 +45,143 @@ bool Collision::collided(GameObject &player, Face face)
 
 	glm::vec2 v1 = face.min;
 	glm::vec2 v2 = face.max;
+	glm::vec3 direction = position - glm::vec3((v1 + (v2 - v1)), 0.f);
+
+
 	if ((position.x >= v1.x && position.x <= v2.x) && (position.z >= v1.y && position.z <= v2.y))
 	{
+		if (position.x > (v1.x + (v2.x - v1.x)) && position.z > (v1.y + (v2.y - v1.y)))
+		{
+			if ((position.x - (v1.x + (v2.x - v1.x)) - (v2.x - v1.x) / 2) < 0.3f)
+				CollidedDirection = 1;
+			
+			if ((position.z - (v1.y + (v2.y - v1.y)) - (v2.y - v1.y) / 2) < 0.3f)
+				CollidedDirection = 2;
+		}
+		else if (position.x > (v1.x + (v2.x - v1.x)) && position.z < (v1.y + (v2.y - v1.y)))
+		{
+			if ((direction.x - (v2.x - v1.x) / 2) < 0.3f)
+				CollidedDirection = 2;
+
+			if (((position.z - (v1.y + (v2.y - v1.y)) + (v2.y - v1.y) / 2) < 0.3f))
+				CollidedDirection = 3;
+		}
+		else if (position.x < (v1.x + (v2.x - v1.x)) && position.z < (v1.y + (v2.y - v1.y)))
+		{
+			if ((direction.x + (v2.x - v1.x) / 2) < 0.3f)
+				CollidedDirection = 4;
+
+			if (((position.z - (v1.y + (v2.y - v1.y)) + (v2.y - v1.y) / 2) < 0.3f))
+				CollidedDirection = 3;
+		}
+		else if (position.x < (v1.x + (v2.x - v1.x)) && position.z > (v1.y + (v2.y - v1.y)))
+		{
+			if ((direction.x + (v2.x - v1.x) / 2) < 0.3f)
+				CollidedDirection = 4;
+
+			if (((position.z - (v1.y + (v2.y - v1.y)) - (v2.y - v1.y) / 2) < 0.3f))
+				CollidedDirection = 1;
+		}
+	//std::cout << "Collide Dir: " << CollidedDirection << std::endl;
 		return true;
 	}
-	if (position.z >= v1.y && position.z <= v2.y && (position.x - (v1.x + (v2.x - v1.x))) < 1.f)
-	{
-		collideY = true;
-		collideX = false;
-		if (position.x < (v1.x + (v2.x - v1.x) / 2))
-		{
-			xDir = false;
-		}
-		else if (position.x > (v1.x + (v2.x - v1.x) / 2))
-		{
-			xDir = true;
-		}
-		if (position.x >= v1.x && position.x <= v2.x)
-		{
-			//std::cout << "Collided!" << std::endl;
-			return true;
-		}
-	}
-	if (position.x >= v1.x && position.x <= v2.x && (position.y - (v1.y + (v2.y - v1.y))) < 1.f)
-	{
-		collideX = true;
-		collideY = false;
-		if (position.z < (v1.y + (v2.y - v1.y) / 2))
-		{
-			yDir = false;
-		}
-		else if (position.z > (v1.y + (v2.y - v1.y) / 2))
-		{
-			yDir = true;
-		}
-		if (position.z >= v1.y && position.z <= v2.y)
-		{
-			//std::cout << "Collided!" << std::endl;
-			return true;
-		}
-	}
+	//if (position.z >= v1.y && position.z <= v2.y && (position.x - (v1.x + (v2.x - v1.x))) < 1.f)
+	//{
+	//	collideY = true;
+	//	collideX = false;
+	//	if (position.x < (v1.x + (v2.x - v1.x) / 2))
+	//	{
+	//		xDir = false;
+	//	}
+	//	else if (position.x > (v1.x + (v2.x - v1.x) / 2))
+	//	{
+	//		xDir = true;
+	//	}
+	//	if (position.x >= v1.x && position.x <= v2.x)
+	//	{
+	//		//std::cout << "Collided!" << std::endl;
+	//		return true;
+	//	}
+	//}
+	//if (position.x >= v1.x && position.x <= v2.x && (position.y - (v1.y + (v2.y - v1.y))) < 1.f)
+	//{
+	//	collideX = true;
+	//	collideY = false;
+	//	if (position.z < (v1.y + (v2.y - v1.y) / 2))
+	//	{
+	//		yDir = false;
+	//	}
+	//	else if (position.z > (v1.y + (v2.y - v1.y) / 2))
+	//	{
+	//		yDir = true;
+	//	}
+	//	if (position.z >= v1.y && position.z <= v2.y)
+	//	{
+	//		//std::cout << "Collided!" << std::endl;
+	//		return true;
+	//	}
+	//}
+	CollidedDirection = 0;
 	return false;
 }
 
-bool Collision::collidedBottom(GameObject & player, std::vector<Face> faces)
+int Collision::collidedBottom(GameObject & player, std::vector<Face> faces)
 {
 	for (auto& face : faces)
 	{
 		//std::cout << min[i].x << '/' << min[i].y << ' ' << max[i].x << '/' << max[i].y << std::endl;
-		bool collide = collided(player, face);
+		//bool collide = collided(player, face);
 		//std::cout << i << '=' << yDir << std::endl;
-		if (!collide || collideY || collideX && yDir)
-		{
-			collideW = false;
-		}
-		else
+		if (collided(player, face))
 		{
 			std::cout << "CollidedW!" << std::endl;
-			return true;
+			return CollidedDirection;
 		}
 	}
-	return collideW;
+	return 0;
 }
 
-bool Collision::collidedRight(GameObject & player, std::vector<Face> faces)
+int Collision::collidedRight(GameObject & player, std::vector<Face> faces)
 {
 	for (auto& face : faces)
 	{
-		bool collide = collided(player, face);
+		//bool collide = collided(player, face);
 		//std::cout << i << '=' << collideX << '-' << xDir << '/' << collideY << '-' << yDir << std::endl;
-		if (!collide || collideX || collideY && !xDir)
-		{
-			collideA = false;
-		}
-		else
+		if (collided(player, face))
 		{
 			std::cout << "CollidedA!" << std::endl;
-			return true;
+			return CollidedDirection;
 		}
 	}
-	return collideA;
+	return 0;
 }
 
-bool Collision::collidedTop(GameObject & player, std::vector<Face> faces)
+int Collision::collidedTop(GameObject & player, std::vector<Face> faces)
 {
 	for (auto& face : faces)
 	{
-		bool collide = collided(player, face);
+		//bool collide = collided(player, face);
 		//std::cout << i << '=' << yDir << std::endl;
-		if (!collide || collideY || collideX && !yDir)
-		{
-			collideS = false;
-		}
-		else
+		if (collided(player, face))
 		{
 			std::cout << "CollidedS!" << std::endl;
-			return true;
+			return CollidedDirection;
 		}
 	}
-	return collideS;
+	return 0;
 }
 
-bool Collision::collidedLeft(GameObject & player, std::vector<Face> faces)
+int Collision::collidedLeft(GameObject & player, std::vector<Face> faces)
 {
 	for (auto& face : faces)
 	{
-		bool collide = collided(player, face);
+		//bool collide = collided(player, face);
 		//std::cout << i << '=' << collideX << '-' << xDir << '/' << collideY << '-' << yDir << std::endl;
-		if (!collide || collideX || collideY && xDir)
-		{
-			collideD = false;
-		}
-		else
+		if (collided(player, face))
 		{
 			std::cout << "CollidedD!" << std::endl;
-			return true;
+			return CollidedDirection;
 		}
 	}
-	return collideD;
+	return 0;
 }

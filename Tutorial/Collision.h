@@ -10,11 +10,12 @@ public:
 	~Collision();
 
 	bool collided(GameObject &player, Face face);
-	bool collidedBottom(GameObject &player, std::vector<Face> faces);
-	bool collidedRight(GameObject &player, std::vector<Face> faces);
-	bool collidedTop(GameObject &player, std::vector<Face> faces);
-	bool collidedLeft(GameObject &player, std::vector<Face> faces);
+	int collidedBottom(GameObject &player, std::vector<Face> faces);
+	int collidedRight(GameObject &player, std::vector<Face> faces);
+	int collidedTop(GameObject &player, std::vector<Face> faces);
+	int collidedLeft(GameObject &player, std::vector<Face> faces);
 private:
+	int CollidedDirection; // 1 = top, 2 = right, 3 = bottom, 4 = left
 	bool collideX;
 	bool collideY;
 	bool xDir;

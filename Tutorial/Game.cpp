@@ -27,11 +27,11 @@ void Game::initializeGame()
 		system("pause");
 		exit(0);
 	}
-
-
+	
 	hitboxes.loadMesh("meshes/Tutorial room Hitboxes Triangulate.obj");
-	hitboxes.transform = glm::translate(hitboxes.transform, { 0, -4, 0 });
-	player.loadMesh("meshes/character model.obj");
+	hitboxes.transform = glm::translate(hitboxes.transform, { 0, -5, 0 });
+	player.loadMesh("meshes/character_model.obj");
+	
 	level.loadMesh("meshes/Tutorial room Base.obj");
 	levelHitBox = LevelHitBox(PLAYER_RADIUS);
 	levelHitBox.loadFromFile("meshes/Tutorial room Hitboxes.obj");
@@ -39,8 +39,11 @@ void Game::initializeGame()
 	player.color = glm::vec4(1.f, 1.f, 1.f, 1.f);
 	hitboxes.color = glm::vec4(1.f, 0.f, 0.f, 1.f);
 	level.color = glm::vec4(0.f, 1.f, 0.f, 1.f);
+	
 
 	player.translate = glm::translate(player.translate, { 11.f, 0.f, 11.f });
+	
+
 
 	cameraTransform = glm::rotate(cameraTransform, glm::radians(70.0f), glm::vec3(1.f, 0.f, 0.f));
 	cameraTransform = glm::translate(cameraTransform, glm::vec3(-11.f, -5.f, -12.18f));
@@ -48,6 +51,14 @@ void Game::initializeGame()
 		(float)WINDOW_WIDTH / (float)WINDOW_HEIGHT,
 		0.1f, 10000.f);
 
+	for (int i = 0; i < 10; i++)
+	{
+		GameObject* enemy = new GameObject;
+		enemy->loadMesh("meshes/enemyModel.obj");
+		enemy->color = glm::vec4(0.5f, 0.5f, 0.5f, 1.0f);
+		enemy->translate = glm::translate(enemy->translate, { 15.f + i, 0.f, 15.f + i });
+		enemies.push_back(enemy);
+	}
 }
 
 void Game::update()
@@ -65,42 +76,54 @@ void Game::update()
 	}
 	if (wKeydown)
 	{
-			if (!collision.collidedBottom(player, levelHitBox.hitBoxes))
+			if (!(collision.collidedBottom(player, levelHitBox.hitBoxes) == 4))
 			{
-				player.translate = glm::translate(player.translate, glm::vec3(0.f, 0.f, -deltaTime * 3));
-				cameraTransform = glm::translate(cameraTransform, glm::vec3(0.f, 0.f, deltaTime * 3));
+				player.translate = glm::translate(player.translate, glm::vec3(0.f, 0.f, -deltaTime * 5));
+				cameraTransform = glm::translate(cameraTransform, glm::vec3(0.f, 0.f, deltaTime * 5));
 			}
 	}
 	if (aKeydown)
 	{
-			if (!collision.collidedRight(player, levelHitBox.hitBoxes))
+			if (!(collision.collidedRight(player, levelHitBox.hitBoxes) == 2))
 			{
-				player.translate = glm::translate(player.translate, glm::vec3(-deltaTime * 3, 0.f, 0.f));
-				cameraTransform = glm::translate(cameraTransform, glm::vec3(deltaTime * 3, 0.f, 0.f));
+				player.translate = glm::translate(player.translate, glm::vec3(-deltaTime * 5, 0.f, 0.f));
+				cameraTransform = glm::translate(cameraTransform, glm::vec3(deltaTime * 5, 0.f, 0.f));
 			}
 	}
 	if (sKeydown)
 	{
 
-			if (!collision.collidedTop(player, levelHitBox.hitBoxes))
+			if (!(collision.collidedTop(player, levelHitBox.hitBoxes) == 1))
 			{
-				player.translate = glm::translate(player.translate, glm::vec3(0.f, 0.f, deltaTime * 3));
-				cameraTransform = glm::translate(cameraTransform, glm::vec3(0.f, 0.f, -deltaTime * 3));
+				player.translate = glm::translate(player.translate, glm::vec3(0.f, 0.f, deltaTime * 5));
+				cameraTransform = glm::translate(cameraTransform, glm::vec3(0.f, 0.f, -deltaTime * 5));
 			}
 	}
 	if (dKeydown)
 	{
-			if (!collision.collidedLeft(player, levelHitBox.hitBoxes))
+			if (!(collision.collidedLeft(player, levelHitBox.hitBoxes) == 3))
 			{
-				player.translate = glm::translate(player.translate, glm::vec3(deltaTime * 3, 0.f, 0.f));
-				cameraTransform = glm::translate(cameraTransform, glm::vec3(-deltaTime * 3, 0.f, 0.f));
+				player.translate = glm::translate(player.translate, glm::vec3(deltaTime * 5, 0.f, 0.f));
+				cameraTransform = glm::translate(cameraTransform, glm::vec3(-deltaTime * 5, 0.f, 0.f));
 			}
 	}
 
 	//collision.collided(player, glm::vec2(2.5f, -0.5f), glm::vec2(3.5f, 0.5f));
 	//collision.collided(player, glm::vec2(2.5f, 1.5f), glm::vec2(3.5f, 2.5f));
+	playerPos = player.transform * glm::vec4(0.f, 0.f, 0.f, 1.f);
 
+	for (int i = 0; i < enemies.size(); i++)
+	{
+		enemyPos = enemies[i]->transform * glm::vec4(0.f, 0.f, 0.f, 1.f);
+		
+		glm::vec3 diff = playerPos - enemyPos;
+		enemies[i]->rotate = glm::rotate(glm::mat4(), glm::radians(90.f) + atan2f(-diff.z, diff.x), { 0, 1, 0 });
 
+		//enemies[i]->translate = glm::translate(enemies[i]->transform, enemyPos);
+		enemies[i]->translate = glm::translate(enemies[i]->translate, glm::vec3(deltaTime * glm::normalize(playerPos.x - enemyPos.x), 0.f, deltaTime * glm::normalize(playerPos.z - enemyPos.z)));
+
+		enemies[i]->transform = enemies[i]->translate * enemies[i]->rotate;
+	}
 	// F = T * R * S;
 	player.transform = player.translate * player.rotate * glm::scale(glm::mat4(), glm::vec3(player.scale));
 }
@@ -113,6 +136,19 @@ void Game::draw()
 	player.draw(Phong, cameraTransform, cameraProjection);
 	level.draw(Phong, cameraTransform, cameraProjection);
 	//hitboxes.draw(Phong, cameraTransform, cameraProjection);
+	for (int i = 0; i < enemies.size(); i++)
+	enemies[i]->draw(Phong, cameraTransform, cameraProjection);
+
+
+	//std::cout << levelHitBox.hitBoxes[0].min.x << '/' << levelHitBox.hitBoxes[0].min.y << ':' << levelHitBox.hitBoxes[0].max.x << '/' << levelHitBox.hitBoxes[0].max.y << std::endl;
+	//glColor3f(0.0, 0.0, 1.0);
+	//glBegin(GL_POLYGON);
+	//glVertex3f(levelHitBox.hitBoxes[0].min.x, -7.0, levelHitBox.hitBoxes[0].min.y);
+	//glVertex3f(levelHitBox.hitBoxes[0].max.x, -7.0, levelHitBox.hitBoxes[0].min.y);
+	//glVertex3f(levelHitBox.hitBoxes[0].max.x, -7.0, levelHitBox.hitBoxes[0].max.y);
+	//glVertex3f(levelHitBox.hitBoxes[0].min.x, -7.0, levelHitBox.hitBoxes[0].max.y);
+	//glEnd();
+	//glFlush();
 
 	glutSwapBuffers();
 }

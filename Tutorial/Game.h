@@ -41,6 +41,7 @@ public:
 	GameObject player, level, hitboxes;
 	LevelHitBox levelHitBox;
 	Collision collision;
+	std::vector<GameObject*> enemies;
 
 	//ShaderProgram passThrough;
 	//ShaderProgram PhongNoTexture;
@@ -48,6 +49,7 @@ public:
 
 	glm::mat4 cameraTransform;
 	glm::mat4 cameraProjection;
+	glm::vec3 playerPos, enemyPos;
 
 	//Mesh monkey;
 	//Mesh level;
