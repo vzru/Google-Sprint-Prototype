@@ -78,17 +78,17 @@ bool LevelHitBox::loadFromFile(const std::string & file) {
 		for (unsigned int j = 0; j < 4; j++)
 		{
 			vertex = vertexData[face.p[j] - 1];
-			if (temp.min.x > vertex.x - radius && temp.min.y > vertex.z - radius) {
+			if (temp.min.x > vertex.x - radius)
 				temp.min.x = vertex.x - radius;
+			if (temp.min.y > vertex.z - radius)
 				temp.min.y = vertex.z - radius;
-			}
-			if (temp.max.x < vertex.x + radius && temp.max.y < vertex.z + radius) {
+			if (temp.max.x < vertex.x + radius)
 				temp.max.x = vertex.x + radius;
+			if (temp.max.y < vertex.z + radius)
 				temp.max.y = vertex.z + radius;
-			}
 		}
-		temp.min.x += 2;
-		temp.max.x += 2;
+		//temp.min.x += 2;
+		//temp.max.x += 2;
 		cout << temp.min.x << "," << temp.min.y << " : " << temp.max.x << "," << temp.max.y << endl;
 		hitBoxes.push_back(temp);
 	}

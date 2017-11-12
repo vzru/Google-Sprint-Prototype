@@ -49,6 +49,7 @@ bool Collision::collided(GameObject &player, Face face)
 	float pCenterY = v1.y + (v2.y - v1.y) / 2;
 	glm::vec3 direction = position - glm::vec3(pCenterX, 0.f, pCenterY);
 	//glColor3f(1.0f, 1.0f, 1.0f);
+	//glLineWidth(10.0f);
 	//glBegin(GL_LINES);
 	//glVertex3f(v1.x, -10.f, v1.y);
 	//glVertex3f(v2.x, -10.f, v2.y);
