@@ -28,13 +28,14 @@ void Game::initializeGame()
 		exit(0);
 	}
 	
-	hitboxes.loadMesh("meshes/Tutorial room Hitboxes Triangulate.obj");
+	hitboxes.loadMesh("meshes/Hitbox Triangle.obj");
 	hitboxes.transform = glm::translate(hitboxes.transform, { 0, -5, 0 });
 	player.loadMesh("meshes/character_model.obj");
+	enemyLoadIn.loadMesh("meshes/enemy_model.obj");
 	
-	level.loadMesh("meshes/Tutorial room Base.obj");
+	level.loadMesh("meshes/Level.obj");
 	levelHitBox = LevelHitBox(PLAYER_RADIUS);
-	levelHitBox.loadFromFile("meshes/Tutorial room Hitboxes.obj");
+	levelHitBox.loadFromFile("meshes/Hitbox Base.obj");
 
 	player.color = glm::vec4(1.f, 1.f, 1.f, 1.f);
 	hitboxes.color = glm::vec4(1.f, 0.f, 0.f, 1.f);
@@ -42,19 +43,18 @@ void Game::initializeGame()
 	
 
 	player.translate = glm::translate(player.translate, { 11.f, 0.f, 11.f });
+	hitboxes.transform = glm::translate(hitboxes.transform, { 2.f, 0.f, 0.f });
 	
 
-
 	cameraTransform = glm::rotate(cameraTransform, glm::radians(70.0f), glm::vec3(1.f, 0.f, 0.f));
-	cameraTransform = glm::translate(cameraTransform, glm::vec3(-11.f, -5.f, -12.18f));
+	cameraTransform = glm::translate(cameraTransform, glm::vec3(-11.f, -15.f, -12.18f));
 	cameraProjection = glm::perspective(glm::radians(90.f),
 		(float)WINDOW_WIDTH / (float)WINDOW_HEIGHT,
 		0.1f, 10000.f);
 
 	for (int i = 0; i < 10; i++)
 	{
-		GameObject* enemy = new GameObject;
-		enemy->loadMesh("meshes/enemyModel.obj");
+		GameObject* enemy = new GameObject(enemyLoadIn);
 		enemy->color = glm::vec4(0.5f, 0.5f, 0.5f, 1.0f);
 		enemy->translate = glm::translate(enemy->translate, { 15.f + i, 0.f, 15.f + i });
 		enemies.push_back(enemy);
@@ -68,6 +68,7 @@ void Game::update()
 
 	float deltaTime = updateTimer->getElapsedTimeSec();
 
+	//std::cout << deltaTime << std::endl;
 	if (shouldRotate)
 	{
 		player.rotate = glm::rotate(player.rotate,
@@ -76,7 +77,7 @@ void Game::update()
 	}
 	if (wKeydown)
 	{
-			if (!(collision.collidedBottom(player, levelHitBox.hitBoxes) == 4))
+			if (collision.collidedBottom(player, levelHitBox.hitBoxes) != 4 && collision.CollidedDirection != 4)
 			{
 				player.translate = glm::translate(player.translate, glm::vec3(0.f, 0.f, -deltaTime * 5));
 				cameraTransform = glm::translate(cameraTransform, glm::vec3(0.f, 0.f, deltaTime * 5));
@@ -84,7 +85,7 @@ void Game::update()
 	}
 	if (aKeydown)
 	{
-			if (!(collision.collidedRight(player, levelHitBox.hitBoxes) == 2))
+			if (collision.collidedRight(player, levelHitBox.hitBoxes) != 2 && collision.CollidedDirection != 2)
 			{
 				player.translate = glm::translate(player.translate, glm::vec3(-deltaTime * 5, 0.f, 0.f));
 				cameraTransform = glm::translate(cameraTransform, glm::vec3(deltaTime * 5, 0.f, 0.f));
@@ -93,7 +94,7 @@ void Game::update()
 	if (sKeydown)
 	{
 
-			if (!(collision.collidedTop(player, levelHitBox.hitBoxes) == 1))
+			if (collision.collidedTop(player, levelHitBox.hitBoxes) != 1 && collision.CollidedDirection != 1)
 			{
 				player.translate = glm::translate(player.translate, glm::vec3(0.f, 0.f, deltaTime * 5));
 				cameraTransform = glm::translate(cameraTransform, glm::vec3(0.f, 0.f, -deltaTime * 5));
@@ -101,7 +102,7 @@ void Game::update()
 	}
 	if (dKeydown)
 	{
-			if (!(collision.collidedLeft(player, levelHitBox.hitBoxes) == 3))
+			if (collision.collidedLeft(player, levelHitBox.hitBoxes) != 3 && collision.CollidedDirection != 3)
 			{
 				player.translate = glm::translate(player.translate, glm::vec3(deltaTime * 5, 0.f, 0.f));
 				cameraTransform = glm::translate(cameraTransform, glm::vec3(-deltaTime * 5, 0.f, 0.f));
@@ -112,7 +113,7 @@ void Game::update()
 	//collision.collided(player, glm::vec2(2.5f, 1.5f), glm::vec2(3.5f, 2.5f));
 	playerPos = player.transform * glm::vec4(0.f, 0.f, 0.f, 1.f);
 
-	for (int i = 0; i < enemies.size(); i++)
+	for (unsigned int i = 0; i < enemies.size(); i++)
 	{
 		enemyPos = enemies[i]->transform * glm::vec4(0.f, 0.f, 0.f, 1.f);
 		
@@ -135,13 +136,13 @@ void Game::draw()
 
 	player.draw(Phong, cameraTransform, cameraProjection);
 	level.draw(Phong, cameraTransform, cameraProjection);
-	//hitboxes.draw(Phong, cameraTransform, cameraProjection);
+	hitboxes.draw(Phong, cameraTransform, cameraProjection);
 	for (int i = 0; i < enemies.size(); i++)
 	enemies[i]->draw(Phong, cameraTransform, cameraProjection);
 
 
 	//std::cout << levelHitBox.hitBoxes[0].min.x << '/' << levelHitBox.hitBoxes[0].min.y << ':' << levelHitBox.hitBoxes[0].max.x << '/' << levelHitBox.hitBoxes[0].max.y << std::endl;
-	//glColor3f(0.0, 0.0, 1.0);
+	//glColor3f(1.0f, 1.0f, 1.0f);
 	//glBegin(GL_POLYGON);
 	//glVertex3f(levelHitBox.hitBoxes[0].min.x, -7.0, levelHitBox.hitBoxes[0].min.y);
 	//glVertex3f(levelHitBox.hitBoxes[0].max.x, -7.0, levelHitBox.hitBoxes[0].min.y);
@@ -164,16 +165,16 @@ void Game::keyboardDown(unsigned char key, int mouseX, int mouseY)
 	case 't':
 		std::cout << "Total elapsed time: " << updateTimer->getCurrentTime() / 1000.0f << std::endl;
 		break;
-	case 'w':
+	case 'w': case 'W':
 		wKeydown = true;
 		break;
-	case 'a':
+	case 'a': case 'A':
 		aKeydown = true;
 		break;
-	case 's':
+	case 's': case 'S':
 		sKeydown = true;
 		break;
-	case 'd':
+	case 'd': case 'D':
 		dKeydown = true;
 		break;
 	case 'o':
@@ -194,16 +195,16 @@ void Game::keyboardUp(unsigned char key, int mouseX, int mouseY)
 	case 'r':
 		shouldRotate = !shouldRotate;
 		break;
-	case 'w':
+	case 'w': case 'W':
 		wKeydown = false;
 		break;
-	case 'a':
+	case 'a': case 'A':
 		aKeydown = false;
 		break;
-	case 's':
+	case 's': case 'S':
 		sKeydown = false;
 		break;
-	case 'd':
+	case 'd': case 'D':
 		dKeydown = false;
 	case 'o':
 		oKeydown = false;

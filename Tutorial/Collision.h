@@ -14,8 +14,10 @@ public:
 	int collidedRight(GameObject &player, std::vector<Face> faces);
 	int collidedTop(GameObject &player, std::vector<Face> faces);
 	int collidedLeft(GameObject &player, std::vector<Face> faces);
-private:
 	int CollidedDirection; // 1 = top, 2 = right, 3 = bottom, 4 = left
+private:
+	Face collidedObject;
+	bool alrdyCollided;
 	bool collideX;
 	bool collideY;
 	bool xDir;

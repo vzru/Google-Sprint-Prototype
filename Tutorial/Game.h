@@ -38,7 +38,7 @@ public:
 
 	Timer* updateTimer = nullptr;
 	float totalGameTime = 0.0f;
-	GameObject player, level, hitboxes;
+	GameObject player, level, hitboxes, enemyLoadIn;
 	LevelHitBox levelHitBox;
 	Collision collision;
 	std::vector<GameObject*> enemies;
