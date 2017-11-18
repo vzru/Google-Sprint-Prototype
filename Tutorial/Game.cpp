@@ -47,12 +47,12 @@ void Game::initializeGame()
 	
 
 	cameraTransform = glm::rotate(cameraTransform, glm::radians(70.0f), glm::vec3(1.f, 0.f, 0.f));
-	cameraTransform = glm::translate(cameraTransform, glm::vec3(-11.f, -15.f, -12.18f));
+	cameraTransform = glm::translate(cameraTransform, glm::vec3(-11.f, -5.f, -12.18f));
 	cameraProjection = glm::perspective(glm::radians(90.f),
 		(float)WINDOW_WIDTH / (float)WINDOW_HEIGHT,
 		0.1f, 10000.f);
 
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < 1; i++)
 	{
 		GameObject* enemy = new GameObject(enemyLoadIn);
 		enemy->color = glm::vec4(0.5f, 0.5f, 0.5f, 1.0f);
@@ -136,7 +136,7 @@ void Game::draw()
 
 	player.draw(Phong, cameraTransform, cameraProjection);
 	level.draw(Phong, cameraTransform, cameraProjection);
-	hitboxes.draw(Phong, cameraTransform, cameraProjection);
+	//hitboxes.draw(Phong, cameraTransform, cameraProjection);
 	for (int i = 0; i < enemies.size(); i++)
 	enemies[i]->draw(Phong, cameraTransform, cameraProjection);
 
