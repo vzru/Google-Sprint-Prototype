@@ -76,6 +76,29 @@ void Game::update()
 		//system("pause");
 	}
 
+	if (shooting)
+	{
+		GameObject* bullet = new GameObject;
+		bullet->hp = 0.5f;
+		bullet->transform = player.transform;
+		bullet->rotate = player.rotate;
+		bullets.push_back(bullet);
+		std::cout << "Bullet Created" << std::endl;
+		shooting = false;
+	}
+
+	for (int i = 0; i < bullets.size(); i++)
+	{
+		bullets[i]->hp -= deltaTime;
+		if (bullets[i]->hp <= 0.f)
+		{
+			delete bullets[i];
+			bullets.erase(i + bullets.begin());
+			i--;
+			std::cout << "Bullet Deleted" << std::endl;
+		}
+	}
+
 	//std::cout << deltaTime << std::endl;
 	if (shouldRotate)
 	{
@@ -156,7 +179,7 @@ void Game::update()
 	}
 	// F = T * R * S;
 	player.transform = player.translate * player.rotate * glm::scale(glm::mat4(), glm::vec3(player.scale));
-	std::cout << player.cd << ':' << player.hp << std::endl;
+	//std::cout << player.cd << ':' << player.hp << std::endl;
 	if (player.hp <= 0.f)
 	{
 		std::cout << "YOU LOSE" << std::endl;
@@ -174,7 +197,22 @@ void Game::draw()
 	level.draw(Phong, cameraTransform, cameraProjection);
 	//hitboxes.draw(Phong, cameraTransform, cameraProjection);
 	for (int i = 0; i < enemies.size(); i++)
+	{
 		enemies[i]->draw(Phong, cameraTransform, cameraProjection);
+	}
+
+	for (int i = 0; i < bullets.size(); i++)
+	{
+		glm::vec3 bulPos = bullets[i]->transform * glm::vec4(0.f, 0.f, 0.f, 1.f);
+		glLineWidth(5.0f);
+		glColor3f(1.f, 1.f, 1.f);
+		glBegin(GL_LINES);
+		glVertex3f(bulPos.x, bulPos.y, bulPos.z);
+		glVertex3f(bulPos.x + 100.f, bulPos.y, bulPos.z);
+		glRotatef(acos(bullets[i]->transform[0][0]), 0, 1, 0);
+		glEnd();
+		std::cout << "Bullet Drawed :" << bulPos.x << '/' << bulPos.y << '/' << bulPos.z << std::endl;
+	}
 
 
 	//std::cout << levelHitBox.hitBoxes[0].min.x << '/' << levelHitBox.hitBoxes[0].min.y << ':' << levelHitBox.hitBoxes[0].max.x << '/' << levelHitBox.hitBoxes[0].max.y << std::endl;
@@ -259,6 +297,7 @@ void Game::mouseClicked(int button, int state, int x, int y)
 		switch (button)
 		{
 		case GLUT_LEFT_BUTTON:
+			shooting = true;
 			// handle left click
 			break;
 		case GLUT_RIGHT_BUTTON:

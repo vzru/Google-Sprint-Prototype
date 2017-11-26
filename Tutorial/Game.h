@@ -44,9 +44,10 @@ public:
 	LevelHitBox levelHitBox;
 	Collision collision;
 	Collision collision2;
-	bool alrdyCollided;
+	bool shooting = false;
 	//Face collidedObject;
 	std::vector<GameObject*> enemies;
+	std::vector<GameObject*> bullets;
 
 	//ShaderProgram passThrough;
 	//ShaderProgram PhongNoTexture;
