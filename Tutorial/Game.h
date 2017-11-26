@@ -36,11 +36,16 @@ public:
 	void mouseClicked(int button, int state, int x, int y);
 	void mousePassive(int x, int y);
 
+	bool clearLevel(glm::vec4 goal);
+
 	Timer* updateTimer = nullptr;
 	float totalGameTime = 0.0f;
 	GameObject player, level, hitboxes, enemyLoadIn;
 	LevelHitBox levelHitBox;
 	Collision collision;
+	Collision collision2;
+	bool alrdyCollided;
+	//Face collidedObject;
 	std::vector<GameObject*> enemies;
 
 	//ShaderProgram passThrough;
@@ -50,6 +55,7 @@ public:
 	glm::mat4 cameraTransform;
 	glm::mat4 cameraProjection;
 	glm::vec3 playerPos, enemyPos;
+	glm::vec4 exitGoal = glm::vec4(93.f, 96.f, 49.5f, 52.5f);
 
 	//Mesh monkey;
 	//Mesh level;

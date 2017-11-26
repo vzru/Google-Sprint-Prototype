@@ -22,6 +22,8 @@ public:
 	glm::mat4 translate;
 	glm::mat4 rotate;
 	float scale = 1;
+	float cd;
+	float hp;
 
 	void loadTexture(const std::string &texFile);
 	void loadMesh(const std::string &meshFile);

@@ -5,6 +5,9 @@
 
 struct Face {
 	glm::vec2 min, max;
+	bool operator==(Face other) {
+		return min == other.min && max == other.max;
+	}
 };
 
 class LevelHitBox : public Mesh {
