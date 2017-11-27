@@ -32,6 +32,7 @@ void Game::initializeGame()
 	hitboxes.transform = glm::translate(hitboxes.transform, { 0, -5, 0 });
 	player.loadMesh("meshes/character_model.obj");
 	enemyLoadIn.loadMesh("meshes/enemy_model.obj");
+	bullet.loadMesh("meshes/bullet.obj");
 
 	level.loadMesh("meshes/Level.obj");
 	levelHitBox = LevelHitBox(PLAYER_RADIUS);
@@ -42,6 +43,8 @@ void Game::initializeGame()
 	player.hp = 10.f;
 	hitboxes.color = glm::vec4(1.f, 0.f, 0.f, 1.f);
 	level.color = glm::vec4(0.f, 1.f, 0.f, 1.f);
+	bullet.hp = 0.05f;
+	bullet.color = glm::vec4(1.f, 1.f, 1.f, 1.f);
 
 
 	player.translate = glm::translate(player.translate, { 11.f, 0.f, 11.f });
@@ -54,11 +57,12 @@ void Game::initializeGame()
 		(float)WINDOW_WIDTH / (float)WINDOW_HEIGHT,
 		0.1f, 10000.f);
 
-	for (int i = 0; i < 1; i++)
+	for (int i = 0; i < 5; i++)
 	{
 		GameObject* enemy = new GameObject(enemyLoadIn);
 		enemy->color = glm::vec4(0.5f, 0.5f, 0.5f, 1.0f);
-		enemy->translate = glm::translate(enemy->translate, { 15.f + i, 0.f, 15.f + i });
+		enemy->translate = glm::translate(enemy->translate, { 10.f + i, 0.f, 10.f + i });
+		enemy->hp = 5.f;
 		enemies.push_back(enemy);
 	}
 }
@@ -78,18 +82,46 @@ void Game::update()
 
 	if (shooting)
 	{
-		GameObject* bullet = new GameObject;
-		bullet->hp = 0.5f;
-		bullet->transform = player.transform;
-		bullet->rotate = player.rotate;
-		bullets.push_back(bullet);
+		//GameObject* bullet = new GameObject;
+		//bullet.rotate = player.rotate;
+		bullet.transform = player.transform;
+		//bullet.transform = glm::translate(bullet.transform, glm::vec3(0.f, 1.f, 0.f));
+		bullets.push_back(new GameObject(bullet));
 		std::cout << "Bullet Created" << std::endl;
 		shooting = false;
 	}
 
 	for (int i = 0; i < bullets.size(); i++)
 	{
+		if (bullets[i]->cd <= 0.f) {
+			glm::vec3 rots = bullets[i]->transform[0];
+			float bang = acos(rots[0]) * asin(rots[2]) / abs(asin(rots[2]));
+			float distToEnemy = 1000.f;
+			GameObject* enemy = nullptr;
+			for (int j = 0; j < enemies.size(); j++)
+			{
+				glm::vec3 diff = enemies[j]->transform * glm::vec4(0.f, 0.f, 0.f, 1.f) - bullets[i]->transform * glm::vec4(0.f, 0.f, 0.f, 1.f);
+				float dang = atan2(diff.z, diff.x);
+				float dist = sin(bang - dang) * glm::length(diff);
+
+				if (dist < 0.5f)
+				{
+					if (distToEnemy > cos(bang - dang) * glm::length(diff)) {
+						distToEnemy = cos(bang - dang) * glm::length(diff);
+						enemy = enemies[j];
+					}
+				}
+				std::cout << enemies[0]->hp << ';' << distToEnemy << ':' << glm::degrees(bang) << std::endl;
+			}
+			if (enemy != nullptr) {
+				enemy->hp--;
+				bullets[i]->cd = 1.f;
+			}
+		}
+		
+		//std::cout << glm::degrees(acos(bullets[i]->transform[0][0]) * asin(bullets[i]->transform[0][2]) / abs(asin(bullets[i]->transform[0][2]))) << std::endl;
 		bullets[i]->hp -= deltaTime;
+		bullets[i]->cd -= deltaTime;
 		if (bullets[i]->hp <= 0.f)
 		{
 			delete bullets[i];
@@ -98,6 +130,19 @@ void Game::update()
 			std::cout << "Bullet Deleted" << std::endl;
 		}
 	}
+
+
+	for (int i = 0; i < enemies.size(); i++)
+	{
+		if (enemies[i]->hp <= 0.f)
+		{
+			delete enemies[i];
+			enemies.erase(i + enemies.begin());
+			i--;
+			std::cout << "Enemy Deleted" << std::endl;
+		}
+	}
+	
 
 	//std::cout << deltaTime << std::endl;
 	if (shouldRotate)
@@ -164,7 +209,7 @@ void Game::update()
 		glm::vec3 diff = playerPos - enemyPos;
 		enemies[i]->rotate = glm::rotate(glm::mat4(), glm::radians(90.f) + atan2f(-diff.z, diff.x), { 0, 1, 0 });
 
-		enemies[i]->translate = glm::translate(enemies[i]->translate, glm::vec3(deltaTime * glm::normalize(playerPos.x - enemyPos.x), 0.f, deltaTime * glm::normalize(playerPos.z - enemyPos.z)));
+		//enemies[i]->translate = glm::translate(enemies[i]->translate, glm::vec3(deltaTime * glm::normalize(playerPos.x - enemyPos.x), 0.f, deltaTime * glm::normalize(playerPos.z - enemyPos.z)));
 
 		enemies[i]->transform = enemies[i]->translate * enemies[i]->rotate;
 		//enemies[i]->translate = glm::translate(enemies[i]->transform, enemyPos);
@@ -190,7 +235,7 @@ void Game::update()
 
 void Game::draw()
 {
-	glClearColor(0, 0, 0, 0);
+	glClearColor(0.f, 0.f, 0.f, 0.f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	player.draw(Phong, cameraTransform, cameraProjection);
@@ -203,15 +248,24 @@ void Game::draw()
 
 	for (int i = 0; i < bullets.size(); i++)
 	{
-		glm::vec3 bulPos = bullets[i]->transform * glm::vec4(0.f, 0.f, 0.f, 1.f);
-		glLineWidth(5.0f);
-		glColor3f(1.f, 1.f, 1.f);
-		glBegin(GL_LINES);
-		glVertex3f(bulPos.x, bulPos.y, bulPos.z);
-		glVertex3f(bulPos.x + 100.f, bulPos.y, bulPos.z);
-		glRotatef(acos(bullets[i]->transform[0][0]), 0, 1, 0);
-		glEnd();
-		std::cout << "Bullet Drawed :" << bulPos.x << '/' << bulPos.y << '/' << bulPos.z << std::endl;
+		bullets[i]->draw(Phong, cameraTransform, cameraProjection);
+		//glm::vec3 bulPos = bullets[i]->transform * glm::vec4(0.f, 0.f, 0.f, 1.f);
+		//GLboolean lightingEnabled;
+		//glGetBooleanv(GL_LIGHTING, &lightingEnabled);
+		//
+		//glDisable(GL_LIGHTING);
+		//glLineWidth(5.0f);
+		//glBegin(GL_LINES);
+		//glColor3f(0.5f, 0.5f, 0.5f);
+		//glVertex3f(bulPos.x, bulPos.y, bulPos.z);
+		//glVertex3f(bulPos.x + 100.f, bulPos.y, bulPos.z);
+		//glRotatef(glm::radians(acos(bullets[i]->transform[0][0])), 0, 1, 0);
+		//glEnd();
+		//glLineWidth(1.0f);
+		//
+		//if (lightingEnabled)
+		//	glEnable(GL_LIGHTING);
+		//std::cout << "Bullet Drawed :" << bulPos.x << '/' << bulPos.y << '/' << bulPos.z << std::endl;
 	}
 
 
