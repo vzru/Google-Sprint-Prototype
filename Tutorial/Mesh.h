@@ -3,7 +3,6 @@
 #include <string>
 #include <GL/glew.h>
 
-#define BUFFER_OFFSET(i) ((char*)0 + (i))
 
 class Mesh
 {

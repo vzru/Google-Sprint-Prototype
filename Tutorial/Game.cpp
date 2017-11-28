@@ -21,7 +21,7 @@ void Game::initializeGame()
 
 	glEnable(GL_DEPTH_TEST);
 
-	if (!Phong.load("shaders/Phong.vert", "shaders/PhongNoTexture.frag"))
+	if (!Phong.load("shaders/Phong.vert", "shaders/Phong.frag"))
 	{
 		std::cout << "Shaders failed to initialize." << std::endl;
 		system("pause");
@@ -50,6 +50,13 @@ void Game::initializeGame()
 	bullet.color = glm::vec4(1.f, 1.f, 1.f, 1.f);
 	collision.collidedObject = nullptr;
 	collision2.collidedObject = nullptr;
+
+	directionalLight.positionDirection = glm::vec4(-1.f, -1.f, -1.f, 1.f);
+	directionalLight.ambient = glm::vec3(0.05f);
+	directionalLight.diffuse = glm::vec3(0.7f);
+	directionalLight.specular = glm::vec3(1.f);
+
+	directionalLight.specularExponent = 50.f;
 
 
 
@@ -249,17 +256,17 @@ void Game::draw()
 	glClearColor(0.f, 0.f, 0.f, 0.f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	player.draw(Phong, cameraTransform, cameraProjection);
-	level.draw(Phong, cameraTransform, cameraProjection);
+	player.draw(Phong, cameraTransform, cameraProjection, directionalLight);
+	level.draw(Phong, cameraTransform, cameraProjection, directionalLight);
 	//hitboxes.draw(Phong, cameraTransform, cameraProjection);
 	for (int i = 0; i < enemies.size(); i++)
 	{
-		enemies[i]->draw(Phong, cameraTransform, cameraProjection);
+		enemies[i]->draw(Phong, cameraTransform, cameraProjection, directionalLight);
 	}
 
 	for (int i = 0; i < bullets.size(); i++)
 	{
-		bullets[i]->draw(Phong, cameraTransform, cameraProjection);
+		bullets[i]->draw(Phong, cameraTransform, cameraProjection, directionalLight);
 		//glm::vec3 bulPos = bullets[i]->transform * glm::vec4(0.f, 0.f, 0.f, 1.f);
 		//GLboolean lightingEnabled;
 		//glGetBooleanv(GL_LIGHTING, &lightingEnabled);

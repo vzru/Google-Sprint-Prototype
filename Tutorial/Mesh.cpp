@@ -9,6 +9,8 @@
 #include "glm\glm.hpp"
 using namespace std;
 
+#define BUFFER_OFFSET(i) ((char*)0 + (i))
+
 struct MeshFace
 {
 	MeshFace()

@@ -13,6 +13,8 @@
 #include "ShaderProgram.h"
 #include "GameObject.h"
 #include "Texture.h"
+#include "Light.h"
+#include <vector>
 #include "Collision.h"
 #include "Level.h"
 
@@ -44,6 +46,7 @@ public:
 	float totalGameTime = 0.0f;
 	GameObject player, level, hitboxes, enemyLoadIn, bullet;
 	LevelHitBox levelHitBox;
+
 	Collision collision;
 	Collision collision2;
 	bool shooting = false;
@@ -54,6 +57,7 @@ public:
 	//ShaderProgram passThrough;
 	//ShaderProgram PhongNoTexture;
 	ShaderProgram Phong;
+	Light directionalLight;
 
 	glm::mat4 cameraTransform;
 	glm::mat4 cameraProjection;

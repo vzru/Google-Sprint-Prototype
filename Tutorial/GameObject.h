@@ -3,7 +3,9 @@
 #include <glm/glm.hpp>
 #include "Mesh.h"
 #include "ShaderProgram.h"
-#include "Texture.h"
+#include <vector>
+#include "Material.h"
+#include "Light.h"
 
 
 class GameObject
@@ -26,10 +28,12 @@ public:
 	float hp;
 	bool hit;
 
-	void loadTexture(const std::string &texFile);
+	Material mat;
+
 	void loadMesh(const std::string &meshFile);
+	void loadTexture(TextureType type, const std::string &texFile);
 
 
-	void draw(ShaderProgram &shader, glm::mat4 &cameraTransform, glm::mat4 &cameraProjection);
+	void draw(ShaderProgram &shader, glm::mat4 &cameraTransform, glm::mat4 &cameraProjection, Light &directionalLight);
 private:
 };

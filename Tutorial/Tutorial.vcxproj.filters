@@ -28,6 +28,12 @@
     <ClCompile Include="Timer.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="Material.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Light.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -52,6 +58,12 @@
       <Filter>Header</Filter>
     </ClInclude>
     <ClInclude Include="GameObject.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Light.h">
       <Filter>Header</Filter>
     </ClInclude>
   </ItemGroup>
