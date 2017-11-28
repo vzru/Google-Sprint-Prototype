@@ -48,6 +48,9 @@ void Game::initializeGame()
 	level.color = glm::vec4(0.f, 1.f, 0.f, 1.f);
 	bullet.hp = 0.05f;
 	bullet.color = glm::vec4(1.f, 1.f, 1.f, 1.f);
+	collision.collidedObject = nullptr;
+	collision2.collidedObject = nullptr;
+
 
 
 	player.translate = glm::translate(player.translate, { 11.f, 0.f, 11.f });
@@ -80,7 +83,7 @@ void Game::update()
 	if (clearLevel(exitGoal))
 	{
 		std::cout << "YOU WIN" << std::endl;
-		//system("pause");
+		system("pause");
 	}
 
 	if (shooting)
@@ -109,7 +112,7 @@ void Game::update()
 
 				if (dist < 0.5f && dist > -0.5f)
 				{
-					if (distToEnemy > (cos(bang - dang) * glm::length(diff))) 
+					if (distToEnemy > (cos(bang - dang) * glm::length(diff)))
 					{
 						distToEnemy = cos(bang - dang) * glm::length(diff);
 						if (distToEnemy > 0)
@@ -118,14 +121,14 @@ void Game::update()
 						}
 					}
 				}
-				std::cout << enemies[j]->hp << ';' << dist << ':' << distToEnemy << ':' << glm::degrees(bang) << std::endl;
+				//std::cout << enemies[j]->hp << ';' << dist << ':' << distToEnemy << ':' << glm::degrees(bang) << std::endl;
 			}
 			if (enemy != nullptr) {
 				enemy->hp--;
 				bullets[i]->cd = 1.f;
 			}
 		}
-		
+
 		//std::cout << glm::degrees(acos(bullets[i]->transform[0][0]) * asin(bullets[i]->transform[0][2]) / abs(asin(bullets[i]->transform[0][2]))) << std::endl;
 		bullets[i]->hp -= deltaTime;
 		bullets[i]->cd -= deltaTime;
@@ -149,7 +152,7 @@ void Game::update()
 			std::cout << "Enemy Deleted" << std::endl;
 		}
 	}
-	
+
 
 	//std::cout << deltaTime << std::endl;
 	if (shouldRotate)
@@ -158,11 +161,13 @@ void Game::update()
 			deltaTime * (glm::pi<float>() / 4.f),
 			glm::vec3(0.f, 1.f, 0.f));
 	}
+
+	std::cout << collision.collidedObject << ':' << collision2.collidedObject << std::endl;
 	if (wKeydown)
 	{
-		if (collision2.colliding(player, levelHitBox.hitBoxes, collision.collidedObject) != 4 && collision2.CollidedDirection != 4)
+		if (collision.colliding(player, levelHitBox.hitBoxes, collision2.collidedObject) != 4 && collision.CollidedDirection != 4)
 		{
-			if (collision.colliding(player, levelHitBox.hitBoxes, collision2.collidedObject) != 4 && collision.CollidedDirection != 4)
+			if (collision2.colliding(player, levelHitBox.hitBoxes, collision.collidedObject) != 4 && collision2.CollidedDirection != 4)
 			{
 				player.translate = glm::translate(player.translate, glm::vec3(0.f, 0.f, -deltaTime * 5));
 				cameraTransform = glm::translate(cameraTransform, glm::vec3(0.f, 0.f, deltaTime * 5));
@@ -171,9 +176,9 @@ void Game::update()
 	}
 	if (aKeydown)
 	{
-		if (collision2.colliding(player, levelHitBox.hitBoxes, collision.collidedObject) != 2 && collision2.CollidedDirection != 2)
+		if (collision.colliding(player, levelHitBox.hitBoxes, collision2.collidedObject) != 2 && collision.CollidedDirection != 2)
 		{
-			if (collision.colliding(player, levelHitBox.hitBoxes, collision2.collidedObject) != 2 && collision.CollidedDirection != 2)
+			if (collision2.colliding(player, levelHitBox.hitBoxes, collision.collidedObject) != 2 && collision2.CollidedDirection != 2)
 			{
 				player.translate = glm::translate(player.translate, glm::vec3(-deltaTime * 5, 0.f, 0.f));
 				cameraTransform = glm::translate(cameraTransform, glm::vec3(deltaTime * 5, 0.f, 0.f));
@@ -183,9 +188,9 @@ void Game::update()
 	if (sKeydown)
 	{
 
-		if (collision2.colliding(player, levelHitBox.hitBoxes, collision.collidedObject) != 1 && collision2.CollidedDirection != 1)
+		if (collision.colliding(player, levelHitBox.hitBoxes, collision2.collidedObject) != 1 && collision.CollidedDirection != 1)
 		{
-			if (collision.colliding(player, levelHitBox.hitBoxes, collision2.collidedObject) != 1 && collision.CollidedDirection != 1)
+			if (collision2.colliding(player, levelHitBox.hitBoxes, collision.collidedObject) != 1 && collision2.CollidedDirection != 1)
 			{
 				player.translate = glm::translate(player.translate, glm::vec3(0.f, 0.f, deltaTime * 5));
 				cameraTransform = glm::translate(cameraTransform, glm::vec3(0.f, 0.f, -deltaTime * 5));
@@ -194,9 +199,9 @@ void Game::update()
 	}
 	if (dKeydown)
 	{
-		if (collision2.colliding(player, levelHitBox.hitBoxes, collision.collidedObject) != 3 && collision2.CollidedDirection != 3)
+		if (collision.colliding(player, levelHitBox.hitBoxes, collision2.collidedObject) != 3 && collision.CollidedDirection != 3)
 		{
-			if (collision.colliding(player, levelHitBox.hitBoxes, collision2.collidedObject) != 3 && collision.CollidedDirection != 3)
+			if (collision2.colliding(player, levelHitBox.hitBoxes, collision.collidedObject) != 3 && collision2.CollidedDirection != 3)
 			{
 				player.translate = glm::translate(player.translate, glm::vec3(deltaTime * 5, 0.f, 0.f));
 				cameraTransform = glm::translate(cameraTransform, glm::vec3(-deltaTime * 5, 0.f, 0.f));
@@ -234,8 +239,7 @@ void Game::update()
 	//std::cout << player.cd << ':' << player.hp << std::endl;
 	if (player.hp <= 0.f)
 	{
-		std::cout << "YOU LOSE" << std::endl;
-		system("pause");
+		Death();
 	}
 	player.cd -= deltaTime;
 }
@@ -392,4 +396,10 @@ bool Game::clearLevel(glm::vec4 goal)
 	//std::cout << goal.x << '/' << goal.y << '/' << goal.z << '/' << goal.w << std::endl;
 
 	return (pos.x >= goal.x && pos.x <= goal.y && pos.z >= goal.z && pos.z <= goal.w);
+}
+
+void Game::Death()
+{
+	std::cout << "YOU LOSE" << std::endl;
+	system("pause");
 }

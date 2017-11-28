@@ -99,6 +99,7 @@ bool Collision::collided(GameObject &player, Face face)
 			}
 			//std::cout << "Collide Dir: " << CollidedDirection << std::endl;
 			collidedObject = &face;
+			std::cout << &face << '=' << collidedObject << std::endl;
 			alrdyCollided = true;
 			return true;
 		}
@@ -212,18 +213,20 @@ bool Collision::collided(GameObject &player, Face face, int dir)
 		alrdyCollided = false;
 		CollidedDirection2 = 0;
 		collidedObject = nullptr;
+		//CollidedDirection = 0;
 	}
 
 	return false;
 }
 
-int Collision::colliding(GameObject & player, std::vector<Face> faces, Face* colObj = nullptr)
+int Collision::colliding(GameObject & player, std::vector<Face> faces, Face* colObj)
 {
+	//std::cout << /*colObj->max.x << '/' <<*/ this << ':' << CollidedDirection << '/' << CollidedDirection2 << std::endl;
 	if (colObj != nullptr)
 	{
-		//std::cout << colObj->max.x << '/' << this << ':' << CollidedDirection << '/' << CollidedDirection2 << std::endl;
 		for (auto& face : faces)
 		{
+			//std::cout << &face << '=' << colObj << std::endl;
 			if (&face == colObj)
 			{
 				std::cout << "SAME FACE" << std::endl;
@@ -231,7 +234,7 @@ int Collision::colliding(GameObject & player, std::vector<Face> faces, Face* col
 			}
 			if (collided(player, face, CollidedDirection))
 			{
-				//std::cout << "CollidedW!" << std::endl;
+				//std::cout << "Collided2!" << std::endl;
 				return CollidedDirection2;
 			}
 		}
@@ -246,8 +249,11 @@ int Collision::colliding(GameObject & player, std::vector<Face> faces, Face* col
 			//std::cout << i << '=' << yDir << std::endl;
 			if (collided(player, face))
 			{
-				//std::cout << "CollidedW!" << std::endl;
-				return CollidedDirection;
+				//if (colObj == nullptr)
+				//{
+					//std::cout << "CollidedW!" << std::endl;
+					return CollidedDirection;
+				//}
 			}
 		}
 		return 0;

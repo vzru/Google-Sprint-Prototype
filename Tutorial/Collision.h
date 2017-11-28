@@ -11,7 +11,7 @@ public:
 
 	bool collided(GameObject &player, Face face);
 	bool collided(GameObject & player, Face face, int dir);
-	int colliding(GameObject & player, std::vector<Face> faces, Face* colObj);
+	int colliding(GameObject & player, std::vector<Face> faces, Face* colObj = nullptr);
 	int collidedBottom(GameObject &player, std::vector<Face> faces);
 	int collidedRight(GameObject &player, std::vector<Face> faces);
 	int collidedTop(GameObject &player, std::vector<Face> faces);

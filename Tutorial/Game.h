@@ -38,6 +38,8 @@ public:
 
 	bool clearLevel(glm::vec4 goal);
 
+	void Death();
+
 	Timer* updateTimer = nullptr;
 	float totalGameTime = 0.0f;
 	GameObject player, level, hitboxes, enemyLoadIn, bullet;
