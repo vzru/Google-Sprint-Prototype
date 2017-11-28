@@ -29,14 +29,17 @@ void Game::initializeGame()
 	}
 
 	hitboxes.loadMesh("meshes/Hitbox Triangle.obj");
+	//hitboxes.loadMesh("meshes/Laboratory Final Triangulated HitBoxes.obj");
 	hitboxes.transform = glm::translate(hitboxes.transform, { 0, -5, 0 });
 	player.loadMesh("meshes/character_model.obj");
 	enemyLoadIn.loadMesh("meshes/enemy_model.obj");
 	bullet.loadMesh("meshes/bullet.obj");
 
 	level.loadMesh("meshes/Level.obj");
+	//level.loadMesh("meshes/Laboratory Level Trianguated.obj");
 	levelHitBox = LevelHitBox(PLAYER_RADIUS);
 	levelHitBox.loadFromFile("meshes/Hitbox Base.obj");
+	//levelHitBox.loadFromFile("meshes/Laboratory Final Base HitBoxes.obj");
 
 	player.color = glm::vec4(1.f, 1.f, 1.f, 1.f);
 	player.cd = 1.f;
@@ -48,7 +51,7 @@ void Game::initializeGame()
 
 
 	player.translate = glm::translate(player.translate, { 11.f, 0.f, 11.f });
-	hitboxes.transform = glm::translate(hitboxes.transform, { 2.f, 0.f, 0.f });
+	//hitboxes.transform = glm::translate(hitboxes.transform, { 2.f, 0.f, 0.f });
 
 
 	cameraTransform = glm::rotate(cameraTransform, glm::radians(70.0f), glm::vec3(1.f, 0.f, 0.f));
@@ -61,7 +64,7 @@ void Game::initializeGame()
 	{
 		GameObject* enemy = new GameObject(enemyLoadIn);
 		enemy->color = glm::vec4(0.5f, 0.5f, 0.5f, 1.0f);
-		enemy->translate = glm::translate(enemy->translate, { 10.f + i, 0.f, 10.f + i });
+		enemy->translate = glm::translate(enemy->translate, { 15.f + i, 0.f, 15.f + i });
 		enemy->hp = 5.f;
 		enemies.push_back(enemy);
 	}
@@ -104,14 +107,18 @@ void Game::update()
 				float dang = atan2(diff.z, diff.x);
 				float dist = sin(bang - dang) * glm::length(diff);
 
-				if (dist < 0.5f)
+				if (dist < 0.5f && dist > -0.5f)
 				{
-					if (distToEnemy > cos(bang - dang) * glm::length(diff)) {
+					if (distToEnemy > (cos(bang - dang) * glm::length(diff))) 
+					{
 						distToEnemy = cos(bang - dang) * glm::length(diff);
-						enemy = enemies[j];
+						if (distToEnemy > 0)
+						{
+							enemy = enemies[j];
+						}
 					}
 				}
-				std::cout << enemies[0]->hp << ';' << distToEnemy << ':' << glm::degrees(bang) << std::endl;
+				std::cout << enemies[j]->hp << ';' << dist << ':' << distToEnemy << ':' << glm::degrees(bang) << std::endl;
 			}
 			if (enemy != nullptr) {
 				enemy->hp--;
@@ -209,7 +216,7 @@ void Game::update()
 		glm::vec3 diff = playerPos - enemyPos;
 		enemies[i]->rotate = glm::rotate(glm::mat4(), glm::radians(90.f) + atan2f(-diff.z, diff.x), { 0, 1, 0 });
 
-		//enemies[i]->translate = glm::translate(enemies[i]->translate, glm::vec3(deltaTime * glm::normalize(playerPos.x - enemyPos.x), 0.f, deltaTime * glm::normalize(playerPos.z - enemyPos.z)));
+		enemies[i]->translate = glm::translate(enemies[i]->translate, glm::vec3(deltaTime * glm::normalize(playerPos.x - enemyPos.x), 0.f, deltaTime * glm::normalize(playerPos.z - enemyPos.z)));
 
 		enemies[i]->transform = enemies[i]->translate * enemies[i]->rotate;
 		//enemies[i]->translate = glm::translate(enemies[i]->transform, enemyPos);
