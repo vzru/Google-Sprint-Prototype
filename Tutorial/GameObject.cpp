@@ -1,6 +1,8 @@
 #include "GameObject.h"
 #include <iostream>
 #include <glm\gtc\type_ptr.hpp>
+#include <vector>
+
 
 GameObject::GameObject()
 {
@@ -17,14 +19,9 @@ GameObject::~GameObject()
 	//mesh.unload();
 }
 
-void GameObject::loadTexture(const std::string &texFile)
+void GameObject::loadTexture(TextureType type, const std::string &texFile)
 {
-	if (!texture.load(texFile))
-	{
-		std::cout << "Texture failed to load." << std::endl;
-		system("pause");
-		exit(0);
-	}
+	mat.loadTexture(type, texFile);
 }
 
 void GameObject::loadMesh(const std::string &meshFile)
@@ -37,34 +34,63 @@ void GameObject::loadMesh(const std::string &meshFile)
 	}
 }
 
-void GameObject::draw(ShaderProgram &shader, glm::mat4 &cameraTransform, glm::mat4 &cameraProjection)
+void GameObject::draw(ShaderProgram &shader, glm::mat4 &cameraTransform, glm::mat4 &cameraProjection,std::vector<Light> &pointLights,Light &directionalLight)
 {
 	shader.bind();
 	shader.sendUniformMat4("uModel", glm::value_ptr(transform), false);
 	shader.sendUniformMat4("uView", glm::value_ptr(cameraTransform), false);
 	shader.sendUniformMat4("uProj", glm::value_ptr(cameraProjection), false);
 
-	shader.sendUniform("uTex", 0);
+	//shader.sendUniform("uTex", 0);
+	shader.sendUniform("material.diffuse", 0);
+	shader.sendUniform("material.specular", 1);
+	shader.sendUniform("material.normal", 2);
+	shader.sendUniform("material.hue", mat.hue);
+	shader.sendUniform("material.specularExponent", mat.specularExponent);
 
-	shader.sendUniform("lightPos", glm::vec4(4.f, 0.f, 0.f, 1.f));
-	shader.sendUniform("objectColor", color);
-	shader.sendUniform("lightAmbient", glm::vec3(0.15f, 0.15f, 0.15f));
-	shader.sendUniform("lightDiffuse", glm::vec3(0.7f, 0.7f, 0.7f));
-	shader.sendUniform("lightSpecular", glm::vec3(1.f, 1.f, 1.f));
-	shader.sendUniform("lightSpecularExponent", 50.f);
-	shader.sendUniform("attenuationConstant", 1.f);
-	shader.sendUniform("attenuationLinear", 0.1f);
-	shader.sendUniform("attenuationQuadratic", 0.01f);
+	for (int i = 0; i < pointLights.size(); i++)
+	{
 
-	texture.bind();
+		std::string prefix = "pointLights[" + std::to_string(i) + "].";
+		shader.sendUniform(prefix + "position", cameraTransform * pointLights[i].positionDirection);
+		shader.sendUniform(prefix + "ambient", pointLights[i].ambient);
+		shader.sendUniform(prefix + "diffuse", pointLights[i].diffuse);
+		shader.sendUniform(prefix + "specular", pointLights[i].specular);
+		shader.sendUniform(prefix + "specularExponent", pointLights[i].specularExponent);
+		shader.sendUniform(prefix + "constantAttenuation", pointLights[i].constantAttenuation);
+		shader.sendUniform(prefix + "linearAttenuation", pointLights[i].linearAttenuation);
+		shader.sendUniform(prefix + "quadraticAttenuation", pointLights[i].quadraticAttenuation);
+
+	}
+
+	shader.sendUniform("directionalLight.direction", cameraTransform * directionalLight.positionDirection);
+	shader.sendUniform("directionalLight.ambient", directionalLight.ambient);
+	shader.sendUniform("directionalLight.diffuse", directionalLight.diffuse);
+	shader.sendUniform("directionalLight.specular", directionalLight.specular);
+	shader.sendUniform("directionalLight.specularExponent", directionalLight.specularExponent);
+
+	//texture.bind();
+	glActiveTexture(GL_TEXTURE0);
+	mat.diffuse.bind();
+
+	glActiveTexture(GL_TEXTURE1);
+	mat.specular.bind();
+
+	glActiveTexture(GL_TEXTURE2);
+	mat.normal.bind();
+
 
 	glBindVertexArray(mesh.vao);
-
 	glDrawArrays(GL_TRIANGLES, 0, mesh.getNumVertices());
-
 	glBindVertexArray(GL_NONE);
+	
+	mat.normal.unbind();
+	
+	glActiveTexture(GL_TEXTURE1);
+	mat.specular.unbind();
 
-	texture.unbind();
+	glActiveTexture(GL_TEXTURE0);
+	mat.diffuse.unbind();
 
 	shader.unbind();
 }

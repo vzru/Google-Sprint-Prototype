@@ -1,7 +1,7 @@
 #pragma once
 
 
-// Keeps track of elapsed time
+// Keeps track of relapsed time
 class Timer
 {
 public:

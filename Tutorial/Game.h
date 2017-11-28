@@ -2,8 +2,8 @@
 
 #define WINDOW_SCREEN_WIDTH 640
 #define WINDOW_SCREEN_HEIGHT 432
-#define WINDOW_WIDTH 1600
-#define WINDOW_HEIGHT 1000
+#define WINDOW_WIDTH 800
+#define WINDOW_HEIGHT 600
 #define FRAMES_PER_SECOND 60
 
 #include "windows.h"
@@ -12,7 +12,8 @@
 #include "ShaderProgram.h"
 #include "GameObject.h"
 #include "Texture.h"
-#include "Collision.h"
+#include "Light.h"
+#include <vector>
 
 #include <GL\GL.h>
 #include <GL\GLU.h>
@@ -33,24 +34,25 @@ public:
 	void keyboardDown(unsigned char key, int mouseX, int mouseY);
 	void keyboardUp(unsigned char key, int mouseX, int mouseY);
 	void mouseClicked(int button, int state, int x, int y);
-	void mousePassive(int x, int y);
+	void mouseMoved(int x, int y);
 
 	Timer* updateTimer = nullptr;
 	float totalGameTime = 0.0f;
-	GameObject player, level;
-	Collision collision;
-	glm::vec2 minVector[2];
-	glm::vec2 maxVector[2];
+	GameObject monkey1, monkey2, cube;
 
-	//ShaderProgram passThrough;
-	//ShaderProgram PhongNoTexture;
+	ShaderProgram passThrough;
+	ShaderProgram PhongNoTexture;
 	ShaderProgram Phong;
+	ShaderProgram PhongColorSides;
+	std::vector<Light> pointLights;
+	Light directionalLight;
 
 	glm::mat4 cameraTransform;
 	glm::mat4 cameraProjection;
+	glm::mat4 lightSpinner;
 
 	//Mesh monkey;
-	//Mesh level;
+	//Mesh monkey2;
 	//glm::mat4 monkeyTransform;
 	//glm::mat4 monkeyRotate;
 	//glm::mat4 monkeyTranslate;
@@ -60,6 +62,7 @@ public:
 
 private:
 	bool shouldRotate = false;
+	bool shouldLightsSpin = false;
 	bool wKeydown = false;
 	bool aKeydown = false;
 	bool sKeydown = false;

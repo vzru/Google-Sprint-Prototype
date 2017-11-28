@@ -3,7 +3,9 @@
 #include <glm/glm.hpp>
 #include "Mesh.h"
 #include "ShaderProgram.h"
-#include "Texture.h"
+#include "Light.h"
+#include <vector>
+#include "Material.h"
 
 
 class GameObject
@@ -15,18 +17,18 @@ public:
 	~GameObject();
 
 	Mesh mesh;
-	Texture texture;
 	glm::mat4 transform;
-	glm::vec4 color;
 
 	glm::mat4 translate;
 	glm::mat4 rotate;
 	float scale = 1;
 
-	void loadTexture(const std::string &texFile);
+	Material mat;
+
 	void loadMesh(const std::string &meshFile);
+	void loadTexture(TextureType type, const std::string &texFile);
 
 
-	void draw(ShaderProgram &shader, glm::mat4 &cameraTransform, glm::mat4 &cameraProjection);
+	void draw(ShaderProgram &shader, glm::mat4 &cameraTransform, glm::mat4 &cameraProjection, std::vector<Light> &pointLights,Light &directionalLight);
 private:
 };
