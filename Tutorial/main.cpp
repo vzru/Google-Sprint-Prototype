@@ -34,6 +34,11 @@ void TimerCallbackFunction(int value)
 	glutTimerFunc(FRAME_DELAY, TimerCallbackFunction, 0);
 }
 
+void WindowReshapeCallbackFunction(int width, int height)
+{
+	game->windowReshape(width, height);
+}
+
 void MouseClickCallbackFunction(int button, int state, int x, int y)
 {
 	game->mouseClicked(button, state, x, y);
@@ -49,9 +54,10 @@ int main(int argc, char **argv)
 	glutInit(&argc, argv);
 	glutInitContextVersion(4, 2);
 	glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+	//glutInitWindowPosition()
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
 	glutCreateWindow("Tutorial");
-	//glutFullScreen();
+	glutFullScreen();
 
 	glewExperimental = true;
 	if (glewInit() != GLEW_OK)
@@ -67,6 +73,7 @@ int main(int argc, char **argv)
 	glutDisplayFunc(DisplayCallbackFunciton);
 	glutKeyboardFunc(KeyboardDownCallbackFunction);
 	glutKeyboardUpFunc(KeyboardUpCallbackFunction);
+	glutReshapeFunc(WindowReshapeCallbackFunction);
 	glutMouseFunc(MouseClickCallbackFunction);
 	glutPassiveMotionFunc(MousePassiveCallbackFunction);
 	glutTimerFunc(1, TimerCallbackFunction, 0);

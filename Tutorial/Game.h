@@ -33,6 +33,7 @@ public:
 	// Input callback functions
 	void keyboardDown(unsigned char key, int mouseX, int mouseY);
 	void keyboardUp(unsigned char key, int mouseX, int mouseY);
+	void windowReshape(int width, int height);
 	void mouseClicked(int button, int state, int x, int y);
 	void mousePassive(int x, int y);
 
@@ -42,7 +43,8 @@ public:
 
 	Timer* updateTimer = nullptr;
 	float totalGameTime = 0.0f;
-	GameObject player, level, hitboxes, enemyLoadIn, bullet;
+	GameObject player, level, hitboxes, bullet, screen;
+	GameObject enemyLoadIn, enemy1;
 	LevelHitBox levelHitBox;
 	Collision collision;
 	Collision collision2;
@@ -54,6 +56,8 @@ public:
 	//ShaderProgram passThrough;
 	//ShaderProgram PhongNoTexture;
 	ShaderProgram Phong;
+	ShaderProgram PhongT;
+
 
 	glm::mat4 cameraTransform;
 	glm::mat4 cameraProjection;
@@ -70,6 +74,7 @@ public:
 
 
 private:
+	glm::vec2 windowSize;
 	bool shouldRotate = false;
 	bool wKeydown = false;
 	bool aKeydown = false;
@@ -77,5 +82,12 @@ private:
 	bool dKeydown = false;
 	bool oKeydown = false;
 	bool pKeydown = false;
-
+	bool collideW = true;
+	bool collideA = true;
+	bool collideS = true;
+	bool collideD = true;
+	bool collide2W = true;
+	bool collide2A = true;
+	bool collide2S = true;
+	bool collide2D = true;
 };

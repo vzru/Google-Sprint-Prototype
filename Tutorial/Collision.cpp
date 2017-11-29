@@ -99,7 +99,7 @@ bool Collision::collided(GameObject &player, Face face)
 			}
 			//std::cout << "Collide Dir: " << CollidedDirection << std::endl;
 			collidedObject = &face;
-			std::cout << &face << '=' << collidedObject << std::endl;
+			//std::cout << &face << '=' << collidedObject << std::endl;
 			alrdyCollided = true;
 			return true;
 		}
@@ -154,7 +154,7 @@ bool Collision::collided(GameObject &player, Face face)
 bool Collision::collided(GameObject &player, Face face, int dir)
 {
 	glm::vec3 position(player.transform * glm::vec4(0.f, 0.f, 0.f, 1.f));
-	
+
 	glm::vec2 v1 = face.min;
 	glm::vec2 v2 = face.max;
 	float pCenterX = v1.x + (v2.x - v1.x) / 2;
@@ -219,45 +219,87 @@ bool Collision::collided(GameObject &player, Face face, int dir)
 	return false;
 }
 
-int Collision::colliding(GameObject & player, std::vector<Face> faces, Face* colObj)
+//int Collision::colliding(GameObject & player, std::vector<Face> faces, Face* colObj)
+//{
+//	//std::cout << /*colObj->max.x << '/' <<*/ this << ':' << CollidedDirection << '/' << CollidedDirection2 << std::endl;
+//	if (colObj != nullptr)
+//	{
+//		for (auto& face : faces)
+//		{
+//			//std::cout << &face << '=' << colObj << std::endl;
+//			if (&face == colObj)
+//			{
+//				std::cout << "SAME FACE" << std::endl;
+//				continue;
+//			}
+//			if (collided(player, face, CollidedDirection))
+//			{
+//				//std::cout << "Collided2!" << std::endl;
+//				return CollidedDirection2;
+//			}
+//		}
+//		return 0;
+//	}
+//	else
+//	{
+//		for (auto& face : faces)
+//		{
+//			//std::cout << min[i].x << '/' << min[i].y << ' ' << max[i].x << '/' << max[i].y << std::endl;
+//			//bool collide = collided(player, face);
+//			//std::cout << i << '=' << yDir << std::endl;
+//			if (collided(player, face))
+//			{
+//				//if (colObj == nullptr)
+//				//{
+//					//std::cout << "CollidedW!" << std::endl;
+//				return CollidedDirection;
+//				//}
+//			}
+//		}
+//		return 0;
+//	}
+//}
+
+bool Collision::collideD(GameObject &player, Face face)
+{
+	glm::vec3 position(player.translate * glm::vec4(0.f, 0.f, 0.f, 1.f));
+
+	glm::vec2 v1 = face.min;
+	glm::vec2 v2 = face.max;
+	//float pCenterX = v1.x + (v2.x - v1.x) / 2;
+	//float pCenterY = v1.y + (v2.y - v1.y) / 2;
+	//glm::vec3 direction = position - glm::vec3(pCenterX, 0.f, pCenterY);
+
+
+	//std::cout << alrdyCollided << " Collide Dir: " << CollidedDirection << std::endl;
+
+	if ((position.x >= v1.x && position.x <= v2.x) && (position.z >= v1.y && position.z <= v2.y))
+	{
+		return true;
+	}
+	return false;
+}
+
+bool Collision::colliding(GameObject & player, std::vector<Face> faces)
 {
 	//std::cout << /*colObj->max.x << '/' <<*/ this << ':' << CollidedDirection << '/' << CollidedDirection2 << std::endl;
-	if (colObj != nullptr)
+
+	for (auto& face : faces)
 	{
-		for (auto& face : faces)
+		//std::cout << min[i].x << '/' << min[i].y << ' ' << max[i].x << '/' << max[i].y << std::endl;
+		//bool collide = collided(player, face);
+		//std::cout << i << '=' << yDir << std::endl;
+		if (collideD(player, face))
 		{
-			//std::cout << &face << '=' << colObj << std::endl;
-			if (&face == colObj)
-			{
-				std::cout << "SAME FACE" << std::endl;
-				continue;
-			}
-			if (collided(player, face, CollidedDirection))
-			{
-				//std::cout << "Collided2!" << std::endl;
-				return CollidedDirection2;
-			}
+			//if (colObj == nullptr)
+			//{
+			std::cout << "Collided!" << std::endl;
+			return true;
+			//}
 		}
-		return 0;
 	}
-	else
-	{
-		for (auto& face : faces)
-		{
-			//std::cout << min[i].x << '/' << min[i].y << ' ' << max[i].x << '/' << max[i].y << std::endl;
-			//bool collide = collided(player, face);
-			//std::cout << i << '=' << yDir << std::endl;
-			if (collided(player, face))
-			{
-				//if (colObj == nullptr)
-				//{
-					//std::cout << "CollidedW!" << std::endl;
-					return CollidedDirection;
-				//}
-			}
-		}
-		return 0;
-	}
+	return false;
+
 }
 
 int Collision::collidedBottom(GameObject & player, std::vector<Face> faces)
