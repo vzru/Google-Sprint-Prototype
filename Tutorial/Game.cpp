@@ -106,24 +106,26 @@ void Game::initializeGame()
 
 	//hitboxes.transform = glm::translate(hitboxes.transform, { 2.f, 0.f, 0.f });
 
+	InitializeEnemy();
 
-
-	for (int i = 0; i < 5; i++)
-	{
-		GameObject* enemy = new GameObject(enemyLoadIn);
-		enemy->color = glm::vec4(0.5f, 0.5f, 0.5f, 1.0f);
-		enemy->translate = glm::translate(enemy->translate, { 15.f + i, 0.f, 15.f + i });
-		enemy->hp = 10.f;
-		enemies.push_back(enemy);
-	}
-	for (int i = 0; i < 5; i++)
-	{
-		GameObject* enemyTemp = new GameObject(enemy1);
-		enemyTemp->color = glm::vec4(1.f, 0.5f, 0.5f, 1.0f);
-		enemyTemp->translate = glm::translate(enemyTemp->translate, { 20.f + (i * 2), 0.f, 20.f + i });
-		enemyTemp->hp = 3.f;
-		enemies.push_back(enemyTemp);
-	}
+	//for (int i = 0; i < enemy1Loc.size(); i++)
+	//{
+	//	GameObject* enemy = new GameObject(enemyLoadIn);
+	//	enemy->color = glm::vec4(0.5f, 0.5f, 0.5f, 1.0f);
+	//	enemy->translate = glm::translate(glm::mat4(), glm::vec3(enemy1Loc[i].x, 0.f, enemy1Loc[i].y));
+	//	enemy->hp = 8.f;
+	//	enemy->speed = 2.5f;
+	//	enemies.push_back(enemy);
+	//}
+	//for (int i = 0; i < enemy2Loc.size(); i++)
+	//{
+	//	GameObject* enemyTemp = new GameObject(enemy1);
+	//	enemyTemp->color = glm::vec4(1.f, 0.5f, 0.5f, 1.0f);
+	//	enemyTemp->translate = glm::translate(glm::mat4(), glm::vec3(enemy2Loc[i].x, 0.f, enemy2Loc[i].y));
+	//	enemyTemp->hp = 3.f;
+	//	enemyTemp->speed = 5.f;
+	//	enemies.push_back(enemyTemp);
+	//}
 
 	GameState = MENU;
 }
@@ -196,6 +198,7 @@ void Game::update()
 				}
 				if (enemy != nullptr) {
 					enemy->hp--;
+					enemy->hit = true;
 					bullets[i]->cd = 1.f;
 				}
 			}
@@ -357,25 +360,29 @@ void Game::update()
 
 		for (unsigned int i = 0; i < enemies.size(); i++)
 		{
+			enemies[i]->transform = enemies[i]->translate * enemies[i]->rotate;
 			if (enemies[i]->hp > 0)
 			{
 				enemyPos = enemies[i]->transform * glm::vec4(0.f, 0.f, 0.f, 1.f);
-
+				//std::cout << i << ':' << playerPos.x << ',' << enemyPos.x << '/' << playerPos.z << ',' << enemyPos.z << std::endl;
 				glm::vec3 diff = playerPos - enemyPos;
 				enemies[i]->rotate = glm::rotate(glm::mat4(), glm::radians(90.f) + atan2f(-diff.z, diff.x), { 0, 1, 0 });
-				
-				glm::mat4 tempE = glm::translate(enemies[i]->translate, glm::vec3(deltaTime * glm::normalize(playerPos.x - enemyPos.x), 0.f, 0.f));
-				if (!collision.colliding(tempE, levelHitBox.hitBoxes))
+				if ((glm::length(diff) < triggerDist || (enemies[i]->hit && glm::length(diff) < triggerDist * 3)) && glm::length(diff) > PLAYER_RADIUS)
 				{
-					enemies[i]->translate = glm::translate(enemies[i]->translate, glm::vec3(deltaTime * glm::normalize(playerPos.x - enemyPos.x), 0.f, 0.f));
-				}
-				
-				tempE = glm::translate(enemies[i]->translate, glm::vec3(0.f, 0.f, deltaTime * glm::normalize(playerPos.z - enemyPos.z)));
-				if (!collision.colliding(tempE, levelHitBox.hitBoxes))
-				{
-					enemies[i]->translate = glm::translate(enemies[i]->translate, glm::vec3(0.f, 0.f, deltaTime * glm::normalize(playerPos.z - enemyPos.z)));
+					glm::mat4 tempE = glm::translate(enemies[i]->translate, glm::vec3(deltaTime * enemies[i]->speed * glm::normalize(playerPos.x - enemyPos.x), 0.f, 0.f));
+					if (!collision.colliding(tempE, levelHitBox.hitBoxes))
+					{
+						enemies[i]->translate = glm::translate(enemies[i]->translate, glm::vec3(deltaTime * enemies[i]->speed * glm::normalize(playerPos.x - enemyPos.x), 0.f, 0.f));
+					}
+
+					tempE = glm::translate(enemies[i]->translate, glm::vec3(0.f, 0.f, deltaTime * enemies[i]->speed * glm::normalize(playerPos.z - enemyPos.z)));
+					if (!collision.colliding(tempE, levelHitBox.hitBoxes))
+					{
+						enemies[i]->translate = glm::translate(enemies[i]->translate, glm::vec3(0.f, 0.f, deltaTime * enemies[i]->speed * glm::normalize(playerPos.z - enemyPos.z)));
+					}
 				}
 				enemies[i]->transform = enemies[i]->translate * enemies[i]->rotate;
+
 				//enemies[i]->translate = glm::translate(enemies[i]->transform, enemyPos);
 				if (player.cd <= 0.f)
 				{
@@ -632,6 +639,28 @@ bool Game::clearLevel(glm::vec4 goal)
 	return (pos.x >= goal.x && pos.x <= goal.y && pos.z >= goal.z && pos.z <= goal.w);
 }
 
+void Game::InitializeEnemy()
+{
+	for (int i = 0; i < enemy1Loc.size(); i++)
+	{
+		GameObject* enemy = new GameObject(enemyLoadIn);
+		enemy->color = glm::vec4(0.5f, 0.5f, 0.5f, 1.0f);
+		enemy->translate = glm::translate(glm::mat4(), glm::vec3(enemy1Loc[i].x, 0.f, enemy1Loc[i].y));
+		enemy->hp = 8.f;
+		enemy->speed = 3.f;
+		enemies.push_back(enemy);
+	}
+	for (int i = 0; i < enemy2Loc.size(); i++)
+	{
+		GameObject* enemyTemp = new GameObject(enemy1);
+		enemyTemp->color = glm::vec4(1.f, 0.5f, 0.5f, 1.0f);
+		enemyTemp->translate = glm::translate(glm::mat4(), glm::vec3(enemy2Loc[i].x, 0.f, enemy2Loc[i].y));
+		enemyTemp->hp = 3.f;
+		enemyTemp->speed = 5.f;
+		enemies.push_back(enemyTemp);
+	}
+}
+
 void Game::Death()
 {
 	GameState = DEATH;
@@ -646,6 +675,7 @@ void Game::Death()
 	player.hp = 20.f;
 	player.cd = 1.f;
 
+	InitializeEnemy();
 	//hud.scale = 0.35f;
 	//std::cout << "YOU LOSE" << std::endl;
 	//system("pause");
@@ -664,6 +694,8 @@ void Game::Win()
 	hpbar.translate = glm::translate(hud.translate, { -1.89f, -0.5f, 0.915f });
 	player.hp = 20.f;
 	player.cd = 1.f;
+
+	InitializeEnemy();
 
 	//hud.scale = 0.35f;
 	//std::cout << "YOU LOSE" << std::endl;

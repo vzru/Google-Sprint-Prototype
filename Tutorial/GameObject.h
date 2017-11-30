@@ -24,7 +24,8 @@ public:
 	float scale = 1;
 	float cd;
 	float hp;
-	bool hit;
+	bool hit = false;
+	float speed;
 
 	void loadTexture(const std::string &texFile);
 	void loadMesh(const std::string &meshFile);
