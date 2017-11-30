@@ -37,6 +37,12 @@ void GameObject::loadMesh(const std::string &meshFile)
 	}
 }
 
+void GameObject::unload()
+{
+	//texture.unbind();
+	//mesh.unload();
+}
+
 void GameObject::draw(ShaderProgram &shader, glm::mat4 &cameraTransform, glm::mat4 &cameraProjection)
 {
 	shader.bind();

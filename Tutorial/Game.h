@@ -31,7 +31,8 @@ public:
 		MENU,
 		GAME,
 		DEATH,
-		WIN
+		WIN,
+		QUIT
 	};
 
 	void initializeGame();
@@ -53,7 +54,7 @@ public:
 
 	Timer* updateTimer = nullptr;
 	float totalGameTime = 0.0f;
-	GameObject player, level, hitboxes, bullet, screen, win, death, hud;
+	GameObject player, level, hitboxes, bullet, screen, win, death, hud, hpbar;
 	GameObject enemyLoadIn, enemy1;
 	LevelHitBox levelHitBox;
 	Collision collision;
@@ -73,6 +74,7 @@ public:
 	glm::mat4 cameraTransform;
 	glm::mat4 cameraProjection;
 	glm::vec3 playerPos, enemyPos;
+	glm::vec3 hpScale;
 	glm::vec4 exitGoal = glm::vec4(77.f, 81.f, 67.f, 70.f);
 
 	//Mesh monkey;

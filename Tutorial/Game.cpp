@@ -50,6 +50,7 @@ void Game::initializeGame()
 	bullet.loadMesh("meshes/bullet.obj");
 	//level.loadMesh("meshes/Level.obj");
 	level.loadMesh("meshes/Laboratory Level Triangulated.obj");
+	//level.loadMesh("meshes/screen.obj");
 	levelHitBox = LevelHitBox(PLAYER_RADIUS);
 	//levelHitBox.loadFromFile("meshes/Hitbox Base.obj");
 	levelHitBox.loadFromFile("meshes/Laboratory Base HitBoxes.obj");
@@ -61,14 +62,16 @@ void Game::initializeGame()
 	win.loadTexture("textures/win.png");
 	death.loadMesh("meshes/screen.obj");
 	death.loadTexture("textures/death.png");
+	hpbar.loadMesh("meshes/hp bar.obj");
 
 
 	player.color = glm::vec4(1.f, 1.f, 1.f, 1.f);
 	player.cd = 1.f;
-	player.hp = 10.f;
+	player.hp = 20.f;
 	hitboxes.color = glm::vec4(1.f, 0.f, 0.f, 1.f);
-	level.color = glm::vec4(1.f, 0.f, 0.f, 1.f);
+	level.color = glm::vec4(0.f, 1.f, 0.f, 1.f);
 	bullet.hp = 0.05f;
+	hpbar.color = glm::vec4(1.f, 0.f, 0.f, 1.f);
 	bullet.color = glm::vec4(1.f, 1.f, 1.f, 1.f);
 	collision.collidedObject = nullptr;
 	collision2.collidedObject = nullptr;
@@ -80,6 +83,10 @@ void Game::initializeGame()
 	hud.translate = glm::translate(hud.translate, { 4.f, 5.f, 7.8199f });
 	hud.rotate = glm::rotate(hud.rotate, glm::radians(20.0f), glm::vec3(1.f, 0.f, 0.f));
 	hud.scale = 0.35f;
+	hpbar.translate = glm::translate(hud.translate, { -1.89f, -0.5f, 0.915f });
+	hpbar.rotate = glm::rotate(hpbar.rotate, glm::radians(20.0f), glm::vec3(1.f, 0.f, 0.f));
+	hpbar.scale = 0.75f;
+	hpScale = glm::vec3(hpbar.scale, hpbar.scale, hpbar.scale);
 	cameraTransform = glm::rotate(cameraTransform, glm::radians(70.0f), glm::vec3(1.f, 0.f, 0.f));
 	cameraTransform = glm::translate(cameraTransform, glm::vec3(-4.f, -6.f, -8.1838f));
 	cameraProjection = glm::perspective(glm::radians(90.f), windowSize.x / windowSize.y, 0.1f, 10000.f);
@@ -206,16 +213,18 @@ void Game::update()
 		}
 
 
-		for (int i = 0; i < enemies.size(); i++)
-		{
-			if (enemies[i]->hp <= 0.f)
-			{
-				delete enemies[i];
-				enemies.erase(i + enemies.begin());
-				i--;
-				//std::cout << "Enemy Deleted" << std::endl;
-			}
-		}
+		//for (int i = 0; i < enemies.size(); i++)
+		//{
+		//	//if (enemies[i]->hp <= 0.f)
+		//	//{
+		//		//enemies[i]->unload();
+		//		// IMPORTANT!!! Deleting unbind the texture from the mesh
+		//		delete enemies[i];
+		//		enemies.erase(i + enemies.begin());
+		//		//i--;
+		//		//std::cout << "Enemy Deleted" << std::endl;
+		//	//}
+		//}
 
 		//glm::vec3 posP(player.transform * glm::vec4(0.f, 0.f, 0.f, 1.f));
 		//std::cout << posP.x << '/' << posP.z << std::endl;
@@ -249,6 +258,7 @@ void Game::update()
 			{
 				player.translate = glm::translate(player.translate, glm::vec3(0.f, 0.f, -deltaTime * 5));
 				hud.translate = glm::translate(hud.translate, glm::vec3(0.f, 0.f, -deltaTime * 5));
+				hpbar.translate = glm::translate(hpbar.translate, glm::vec3(0.f, 0.f, -deltaTime * 5));
 				cameraTransform = glm::translate(cameraTransform, glm::vec3(0.f, 0.f, deltaTime * 5));
 			}
 			//}
@@ -277,6 +287,7 @@ void Game::update()
 			{
 				player.translate = glm::translate(player.translate, glm::vec3(-deltaTime * 5, 0.f, 0.f));
 				hud.translate = glm::translate(hud.translate, glm::vec3(-deltaTime * 5, 0.f, 0.f));
+				hpbar.translate = glm::translate(hpbar.translate, glm::vec3(-deltaTime * 5, 0.f, 0.f));
 				cameraTransform = glm::translate(cameraTransform, glm::vec3(deltaTime * 5, 0.f, 0.f));
 			}
 			//collideA = true;
@@ -303,6 +314,7 @@ void Game::update()
 			{
 				player.translate = glm::translate(player.translate, glm::vec3(0.f, 0.f, deltaTime * 5));
 				hud.translate = glm::translate(hud.translate, glm::vec3(0.f, 0.f, deltaTime * 5));
+				hpbar.translate = glm::translate(hpbar.translate, glm::vec3(0.f, 0.f, deltaTime * 5));
 				cameraTransform = glm::translate(cameraTransform, glm::vec3(0.f, 0.f, -deltaTime * 5));
 			}
 			//collideS = true;
@@ -330,6 +342,7 @@ void Game::update()
 			{
 				player.translate = glm::translate(player.translate, glm::vec3(deltaTime * 5, 0.f, 0.f));
 				hud.translate = glm::translate(hud.translate, glm::vec3(deltaTime * 5, 0.f, 0.f));
+				hpbar.translate = glm::translate(hpbar.translate, glm::vec3(deltaTime * 5, 0.f, 0.f));
 				cameraTransform = glm::translate(cameraTransform, glm::vec3(-deltaTime * 5, 0.f, 0.f));
 			}
 			//}
@@ -344,29 +357,33 @@ void Game::update()
 
 		for (unsigned int i = 0; i < enemies.size(); i++)
 		{
-			enemyPos = enemies[i]->transform * glm::vec4(0.f, 0.f, 0.f, 1.f);
-
-			glm::vec3 diff = playerPos - enemyPos;
-			enemies[i]->rotate = glm::rotate(glm::mat4(), glm::radians(90.f) + atan2f(-diff.z, diff.x), { 0, 1, 0 });
-			//GameObject* tempE = enemies[i];
-			//tempE->translate = glm::translate(enemies[i]->translate, glm::vec3(deltaTime * glm::normalize(playerPos.x - enemyPos.x), 0.f, 0.f));
-			//if (!collision.colliding(*tempE, levelHitBox.hitBoxes))
-			//{
-			//	//enemies[i]->translate = glm::translate(enemies[i]->translate, glm::vec3(deltaTime * glm::normalize(playerPos.x - enemyPos.x), 0.f, 0.f));
-			//}
-			////tempE->translate = glm::translate(enemies[i]->translate, glm::vec3(0.f, 0.f, deltaTime * glm::normalize(playerPos.z - enemyPos.z)));
-			//if (!collision.colliding(*tempE, levelHitBox.hitBoxes))
-			//{
-			//	//enemies[i]->translate = glm::translate(enemies[i]->translate, glm::vec3(0.f, 0.f, deltaTime * glm::normalize(playerPos.z - enemyPos.z)));
-			//}
-			enemies[i]->transform = enemies[i]->translate * enemies[i]->rotate;
-			//enemies[i]->translate = glm::translate(enemies[i]->transform, enemyPos);
-			if (player.cd <= 0.f)
+			if (enemies[i]->hp > 0)
 			{
-				if (glm::length(diff) < 1.f)
+				enemyPos = enemies[i]->transform * glm::vec4(0.f, 0.f, 0.f, 1.f);
+
+				glm::vec3 diff = playerPos - enemyPos;
+				enemies[i]->rotate = glm::rotate(glm::mat4(), glm::radians(90.f) + atan2f(-diff.z, diff.x), { 0, 1, 0 });
+				
+				glm::mat4 tempE = glm::translate(enemies[i]->translate, glm::vec3(deltaTime * glm::normalize(playerPos.x - enemyPos.x), 0.f, 0.f));
+				if (!collision.colliding(tempE, levelHitBox.hitBoxes))
 				{
-					player.hp--;
-					player.cd = 1.f;
+					enemies[i]->translate = glm::translate(enemies[i]->translate, glm::vec3(deltaTime * glm::normalize(playerPos.x - enemyPos.x), 0.f, 0.f));
+				}
+				
+				tempE = glm::translate(enemies[i]->translate, glm::vec3(0.f, 0.f, deltaTime * glm::normalize(playerPos.z - enemyPos.z)));
+				if (!collision.colliding(tempE, levelHitBox.hitBoxes))
+				{
+					enemies[i]->translate = glm::translate(enemies[i]->translate, glm::vec3(0.f, 0.f, deltaTime * glm::normalize(playerPos.z - enemyPos.z)));
+				}
+				enemies[i]->transform = enemies[i]->translate * enemies[i]->rotate;
+				//enemies[i]->translate = glm::translate(enemies[i]->transform, enemyPos);
+				if (player.cd <= 0.f)
+				{
+					if (glm::length(diff) < 1.f)
+					{
+						player.hp--;
+						player.cd = 1.f;
+					}
 				}
 			}
 		}
@@ -374,6 +391,9 @@ void Game::update()
 		player.transform = player.translate * player.rotate * glm::scale(glm::mat4(), glm::vec3(player.scale));
 		//std::cout << player.cd << ':' << player.hp << std::endl;
 		hud.transform = hud.translate * hud.rotate * glm::scale(glm::mat4(), glm::vec3(hud.scale));
+		hpScale.x = hpbar.scale * player.hp;
+		hpbar.transform = hpbar.translate * hpbar.rotate * glm::scale(glm::mat4(), hpScale);
+
 		//screen.transform = screen.translate * screen.rotate * glm::scale(glm::mat4(), glm::vec3(screen.scale));
 
 		//death.translate = glm::translate(player.translate, { 0.f, 5.f, 1.8199f });
@@ -395,6 +415,22 @@ void Game::update()
 	{
 		win.transform = win.translate * win.rotate * glm::scale(glm::mat4(), glm::vec3(win.scale));
 	}
+	else if (GameState == state::QUIT)
+	{
+		for (int i = 0; i < enemies.size(); i++)
+		{
+			//if (enemies[i]->hp <= 0.f)
+			//{
+			//enemies[i]->unload();
+			// IMPORTANT!!! Deleting unbind the texture from the mesh
+			delete enemies[i];
+			enemies.erase(i + enemies.begin());
+			//i--;
+			//std::cout << "Enemy Deleted" << std::endl;
+			//}
+		}
+		exit(1);
+	}
 }
 
 void Game::draw()
@@ -413,10 +449,15 @@ void Game::draw()
 		level.draw(PhongNoTexture, cameraTransform, cameraProjection);
 		//std::cout << hud.color.w << std::endl;
 		hud.draw(Phong, cameraTransform, cameraProjection);
+		hpbar.draw(PhongNoTexture, cameraTransform, cameraProjection);
+
 		//hitboxes.draw(Phong, cameraTransform, cameraProjection);
 		for (int i = 0; i < enemies.size(); i++)
 		{
-			enemies[i]->draw(Phong, cameraTransform, cameraProjection);
+			if (enemies[i]->hp > 0)
+			{
+				enemies[i]->draw(Phong, cameraTransform, cameraProjection);
+			}
 		}
 
 		for (int i = 0; i < bullets.size(); i++)
@@ -470,7 +511,7 @@ void Game::keyboardDown(unsigned char key, int mouseX, int mouseY)
 	{
 	case 27: // esc key
 	case 'q':
-		exit(1);
+		GameState = QUIT;
 		break;
 	case 't':
 		//std::cout << "Total elapsed time: " << updateTimer->getCurrentTime() / 1000.0f << std::endl;
@@ -518,10 +559,10 @@ void Game::keyboardUp(unsigned char key, int mouseX, int mouseY)
 		dKeydown = false;
 		break;
 	case 'o':
-		//oKeydown = false;
+		hpbar.translate = glm::translate(hpbar.translate, glm::vec3(-1.f, 0.f, 0.f));
 		break;
 	case 'p':
-		//pKeydown = false;
+		hpbar.translate = glm::translate(hpbar.translate, glm::vec3(1.f, 0.f, 0.f));
 		break;
 	case ' ':
 		if (GameState == MENU)
@@ -601,7 +642,8 @@ void Game::Death()
 	screen.translate = glm::translate(player.translate, { 0.f, 5.f, 1.8199f });
 	death.translate = glm::translate(player.translate, { 0.f, 5.f, 1.8199f });
 	hud.translate = glm::translate(glm::mat4(), { 4.f, 5.f, 7.8199f });
-	player.hp = 10.f;
+	hpbar.translate = glm::translate(hud.translate, { -1.89f, -0.5f, 0.915f });
+	player.hp = 20.f;
 	player.cd = 1.f;
 
 	//hud.scale = 0.35f;
@@ -619,7 +661,8 @@ void Game::Win()
 	screen.translate = glm::translate(player.translate, { 0.f, 5.f, 1.8199f });
 	win.translate = glm::translate(player.translate, { 0.f, 5.f, 1.8199f });
 	hud.translate = glm::translate(glm::mat4(), { 4.f, 5.f, 7.8199f });
-	player.hp = 10.f;
+	hpbar.translate = glm::translate(hud.translate, { -1.89f, -0.5f, 0.915f });
+	player.hp = 20.f;
 	player.cd = 1.f;
 
 	//hud.scale = 0.35f;

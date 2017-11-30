@@ -28,7 +28,7 @@ public:
 
 	void loadTexture(const std::string &texFile);
 	void loadMesh(const std::string &meshFile);
-
+	void unload();
 
 	void draw(ShaderProgram &shader, glm::mat4 &cameraTransform, glm::mat4 &cameraProjection);
 private:
