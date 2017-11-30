@@ -293,7 +293,49 @@ bool Collision::colliding(GameObject & player, std::vector<Face> faces)
 		{
 			//if (colObj == nullptr)
 			//{
-			std::cout << "Collided!" << std::endl;
+			//std::cout << "Collided!" << std::endl;
+			return true;
+			//}
+		}
+	}
+	return false;
+
+}
+
+bool Collision::collideD(glm::mat4 translate, Face face)
+{
+	glm::vec3 position(translate * glm::vec4(0.f, 0.f, 0.f, 1.f));
+
+	glm::vec2 v1 = face.min;
+	glm::vec2 v2 = face.max;
+	//float pCenterX = v1.x + (v2.x - v1.x) / 2;
+	//float pCenterY = v1.y + (v2.y - v1.y) / 2;
+	//glm::vec3 direction = position - glm::vec3(pCenterX, 0.f, pCenterY);
+
+
+	//std::cout << alrdyCollided << " Collide Dir: " << CollidedDirection << std::endl;
+
+	if ((position.x >= v1.x && position.x <= v2.x) && (position.z >= v1.y && position.z <= v2.y))
+	{
+		return true;
+	}
+	return false;
+}
+
+bool Collision::colliding(glm::mat4 translate, std::vector<Face> faces)
+{
+	//std::cout << /*colObj->max.x << '/' <<*/ this << ':' << CollidedDirection << '/' << CollidedDirection2 << std::endl;
+
+	for (auto& face : faces)
+	{
+		//std::cout << min[i].x << '/' << min[i].y << ' ' << max[i].x << '/' << max[i].y << std::endl;
+		//bool collide = collided(player, face);
+		//std::cout << i << '=' << yDir << std::endl;
+		if (collideD(translate, face))
+		{
+			//if (colObj == nullptr)
+			//{
+			//std::cout << "Collided!" << std::endl;
 			return true;
 			//}
 		}

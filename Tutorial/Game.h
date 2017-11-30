@@ -26,6 +26,14 @@ public:
 	Game();
 	~Game();
 
+	enum state
+	{
+		MENU,
+		GAME,
+		DEATH,
+		WIN
+	};
+
 	void initializeGame();
 	void update();
 	void draw();
@@ -41,28 +49,31 @@ public:
 
 	void Death();
 
+	void Win();
+
 	Timer* updateTimer = nullptr;
 	float totalGameTime = 0.0f;
-	GameObject player, level, hitboxes, bullet, screen;
+	GameObject player, level, hitboxes, bullet, screen, win, death, hud;
 	GameObject enemyLoadIn, enemy1;
 	LevelHitBox levelHitBox;
 	Collision collision;
 	Collision collision2;
+	state GameState;
 	bool shooting = false;
 	//Face collidedObject;
 	std::vector<GameObject*> enemies;
 	std::vector<GameObject*> bullets;
 
 	//ShaderProgram passThrough;
-	//ShaderProgram PhongNoTexture;
+	ShaderProgram PhongNoTexture;
+	//ShaderProgram Phong;
 	ShaderProgram Phong;
-	ShaderProgram PhongT;
 
 
 	glm::mat4 cameraTransform;
 	glm::mat4 cameraProjection;
 	glm::vec3 playerPos, enemyPos;
-	glm::vec4 exitGoal = glm::vec4(93.f, 96.f, 49.5f, 52.5f);
+	glm::vec4 exitGoal = glm::vec4(77.f, 81.f, 67.f, 70.f);
 
 	//Mesh monkey;
 	//Mesh level;

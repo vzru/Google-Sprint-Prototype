@@ -46,7 +46,7 @@ void GameObject::draw(ShaderProgram &shader, glm::mat4 &cameraTransform, glm::ma
 
 	shader.sendUniform("uTex", 0);
 
-	shader.sendUniform("lightPos", glm::vec4(4.f, 0.f, 0.f, 1.f));
+	shader.sendUniform("lightPos", glm::vec4(0.f, 7.f, 5.f, 1.f));
 	shader.sendUniform("objectColor", color);
 	shader.sendUniform("lightAmbient", glm::vec3(0.15f, 0.15f, 0.15f));
 	shader.sendUniform("lightDiffuse", glm::vec3(0.7f, 0.7f, 0.7f));

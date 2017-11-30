@@ -142,6 +142,7 @@
     <None Include="shaders\Phong.frag" />
     <None Include="shaders\Phong.vert" />
     <None Include="shaders\PhongNoTexture.frag" />
+    <None Include="shaders\PhongNoTexture.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -54,10 +54,10 @@ int main(int argc, char **argv)
 	glutInit(&argc, argv);
 	glutInitContextVersion(4, 2);
 	glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
-	//glutInitWindowPosition()
+	glutInitWindowPosition((glutGet(GLUT_SCREEN_WIDTH) - 1600) / 2, (glutGet(GLUT_SCREEN_HEIGHT) - 1000) / 2);
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
 	glutCreateWindow("Tutorial");
-	glutFullScreen();
+	//glutFullScreen();
 
 	glewExperimental = true;
 	if (glewInit() != GLEW_OK)

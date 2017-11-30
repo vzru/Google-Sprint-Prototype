@@ -14,6 +14,8 @@ public:
 	//int colliding(GameObject & player, std::vector<Face> faces, Face* colObj = nullptr);
 	bool collideD(GameObject & player, Face face);
 	bool colliding(GameObject & player, std::vector<Face> faces);
+	bool collideD(glm::mat4 translate, Face face);
+	bool colliding(glm::mat4 translate, std::vector<Face> faces);
 	int collidedBottom(GameObject &player, std::vector<Face> faces);
 	int collidedRight(GameObject &player, std::vector<Face> faces);
 	int collidedTop(GameObject &player, std::vector<Face> faces);
