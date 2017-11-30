@@ -56,8 +56,8 @@ public:
 
 	Timer* updateTimer = nullptr;
 	float totalGameTime = 0.0f;
-	GameObject player, level, hitboxes, bullet, screen, win, death, hud, hpbar;
-	GameObject enemyLoadIn, enemy1;
+	GameObject player, level, hitboxes, bullet, screen, win, death, hud, hpbar, playB, quitB;
+	GameObject enemyLoadIn, enemy1, enemy2;
 	LevelHitBox levelHitBox;
 	Collision collision;
 	Collision collision2;

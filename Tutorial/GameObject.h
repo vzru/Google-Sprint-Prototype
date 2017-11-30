@@ -26,6 +26,7 @@ public:
 	float hp;
 	bool hit = false;
 	float speed;
+	float damage;
 
 	void loadTexture(const std::string &texFile);
 	void loadMesh(const std::string &meshFile);

@@ -45,6 +45,8 @@ void Game::initializeGame()
 	enemyLoadIn.loadTexture("textures/enemy texture.png");
 	enemy1.loadMesh("meshes/enemy2_model.obj");
 	enemy1.loadTexture("textures/enemy2 texture.png");
+	enemy2.loadMesh("meshes/enemy3_model.obj");
+	enemy2.loadTexture("textures/enemy3 texture.png");
 
 
 	bullet.loadMesh("meshes/bullet.obj");
@@ -57,12 +59,14 @@ void Game::initializeGame()
 	hud.loadMesh("meshes/hud_plane.obj");
 	hud.loadTexture("textures/HUD.png");
 	screen.loadMesh("meshes/screen.obj");
-	screen.loadTexture("textures/death.png");
+	screen.loadTexture("textures/menu.png");
 	win.loadMesh("meshes/screen.obj");
 	win.loadTexture("textures/win.png");
 	death.loadMesh("meshes/screen.obj");
 	death.loadTexture("textures/death.png");
 	hpbar.loadMesh("meshes/hp bar.obj");
+	playB.loadMesh("meshes/Play Button.obj");
+	quitB.loadMesh("meshes/Quit Button.obj");
 
 
 	player.color = glm::vec4(1.f, 1.f, 1.f, 1.f);
@@ -73,6 +77,8 @@ void Game::initializeGame()
 	bullet.hp = 0.05f;
 	hpbar.color = glm::vec4(1.f, 0.f, 0.f, 1.f);
 	bullet.color = glm::vec4(1.f, 1.f, 1.f, 1.f);
+	playB.color = glm::vec4(1.f, 1.f, 1.f, 1.f);
+	quitB.color = glm::vec4(1.f, 1.f, 1.f, 1.f);
 	collision.collidedObject = nullptr;
 	collision2.collidedObject = nullptr;
 	//hud.color = glm::vec4(0.5f, 0.5f, 1.f, 0.3f);
@@ -94,6 +100,12 @@ void Game::initializeGame()
 	screen.translate = glm::translate(player.translate, { 0.f, 5.f, 1.8199f });
 	screen.rotate = glm::rotate(screen.rotate, glm::radians(20.0f), glm::vec3(1.f, 0.f, 0.f));
 	screen.scale = 0.4f;
+	playB.translate = glm::translate(screen.translate, { 0.f, 0.3f, 0.f });
+	playB.rotate = glm::rotate(playB.rotate, glm::radians(20.0f), glm::vec3(1.f, 0.f, 0.f));
+	playB.scale = 0.5f;
+	quitB.translate = glm::translate(screen.translate, { 0.f, 0.2f, 0.5f });
+	quitB.rotate = glm::rotate(quitB.rotate, glm::radians(20.0f), glm::vec3(1.f, 0.f, 0.f));
+	quitB.scale = 0.5f;
 	death.translate = glm::translate(player.translate, { 0.f, 5.f, 1.8199f });
 	death.rotate = glm::rotate(death.rotate, glm::radians(20.0f), glm::vec3(1.f, 0.f, 0.f));
 	death.scale = 0.4f;
@@ -135,6 +147,9 @@ void Game::update()
 	if (GameState == MENU)
 	{
 		screen.transform = screen.translate * screen.rotate * glm::scale(glm::mat4(), glm::vec3(screen.scale));
+		playB.transform = playB.translate * playB.rotate * glm::scale(glm::mat4(), glm::vec3(playB.scale));
+		quitB.transform = quitB.translate * quitB.rotate * glm::scale(glm::mat4(), glm::vec3(quitB.scale));
+
 		player.transform = player.translate * player.rotate * glm::scale(glm::mat4(), glm::vec3(player.scale));
 		hud.transform = hud.translate * hud.rotate * glm::scale(glm::mat4(), glm::vec3(hud.scale));
 		//player.cd = 1.f;
@@ -388,7 +403,7 @@ void Game::update()
 				{
 					if (glm::length(diff) < 1.f)
 					{
-						player.hp--;
+						player.hp -= enemies[i]->damage;
 						player.cd = 1.f;
 					}
 				}
@@ -449,6 +464,9 @@ void Game::draw()
 	if (GameState == state::MENU)
 	{
 		screen.draw(Phong, cameraTransform, cameraProjection);
+		playB.draw(PhongNoTexture, cameraTransform, cameraProjection);
+		quitB.draw(PhongNoTexture, cameraTransform, cameraProjection);
+
 	}
 	else if (GameState == state::GAME)
 	{
@@ -646,6 +664,7 @@ void Game::InitializeEnemy()
 		GameObject* enemy = new GameObject(enemyLoadIn);
 		enemy->color = glm::vec4(0.5f, 0.5f, 0.5f, 1.0f);
 		enemy->translate = glm::translate(glm::mat4(), glm::vec3(enemy1Loc[i].x, 0.f, enemy1Loc[i].y));
+		enemy->damage = 3.f;
 		enemy->hp = 8.f;
 		enemy->speed = 3.f;
 		enemies.push_back(enemy);
@@ -655,9 +674,20 @@ void Game::InitializeEnemy()
 		GameObject* enemyTemp = new GameObject(enemy1);
 		enemyTemp->color = glm::vec4(1.f, 0.5f, 0.5f, 1.0f);
 		enemyTemp->translate = glm::translate(glm::mat4(), glm::vec3(enemy2Loc[i].x, 0.f, enemy2Loc[i].y));
+		enemyTemp->damage = 5.f;
 		enemyTemp->hp = 3.f;
 		enemyTemp->speed = 5.f;
 		enemies.push_back(enemyTemp);
+	}
+	for (int i = 0; i < enemy1Loc.size(); i++)
+	{
+		GameObject* enemyTemp2 = new GameObject(enemy2);
+		enemyTemp2->color = glm::vec4(1.f, 0.5f, 0.5f, 1.0f);
+		enemyTemp2->translate = glm::translate(glm::mat4(), glm::vec3(enemy1Loc[i].x, 0.f, enemy1Loc[i].y));
+		enemyTemp2->damage = 1.f;
+		enemyTemp2->hp = 5.f;
+		enemyTemp2->speed = 4.f;
+		enemies.push_back(enemyTemp2);
 	}
 }
 
@@ -669,6 +699,8 @@ void Game::Death()
 	cameraTransform = glm::translate(cameraTransform, glm::vec3(-4.f, -6.f, -8.1838f));
 	cameraProjection = glm::perspective(glm::radians(90.f), windowSize.x / windowSize.y, 0.1f, 10000.f);
 	screen.translate = glm::translate(player.translate, { 0.f, 5.f, 1.8199f });
+	playB.translate = glm::translate(screen.translate, { 0.f, 0.3f, 0.f });
+	quitB.translate = glm::translate(screen.translate, { 0.f, 0.2f, 0.5f });
 	death.translate = glm::translate(player.translate, { 0.f, 5.f, 1.8199f });
 	hud.translate = glm::translate(glm::mat4(), { 4.f, 5.f, 7.8199f });
 	hpbar.translate = glm::translate(hud.translate, { -1.89f, -0.5f, 0.915f });
@@ -689,6 +721,8 @@ void Game::Win()
 	cameraTransform = glm::translate(cameraTransform, glm::vec3(-4.f, -6.f, -8.1838f));
 	cameraProjection = glm::perspective(glm::radians(90.f), windowSize.x / windowSize.y, 0.1f, 10000.f);
 	screen.translate = glm::translate(player.translate, { 0.f, 5.f, 1.8199f });
+	playB.translate = glm::translate(screen.translate, { 0.f, 0.3f, 0.f });
+	quitB.translate = glm::translate(screen.translate, { 0.f, 0.2f, 0.5f });
 	win.translate = glm::translate(player.translate, { 0.f, 5.f, 1.8199f });
 	hud.translate = glm::translate(glm::mat4(), { 4.f, 5.f, 7.8199f });
 	hpbar.translate = glm::translate(hud.translate, { -1.89f, -0.5f, 0.915f });
