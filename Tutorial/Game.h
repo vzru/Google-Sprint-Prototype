@@ -63,6 +63,7 @@ public:
 	Collision collision2;
 	state GameState;
 	bool shooting = false;
+	float timeCounter;
 	//Face collidedObject;
 	std::vector<GameObject*> enemies;
 	std::vector<GameObject*> bullets;
@@ -79,6 +80,7 @@ public:
 	glm::vec3 hpScale;
 	glm::vec4 exitGoal = glm::vec4(77.f, 81.f, 67.f, 70.f);
 
+
 	//Mesh monkey;
 	//Mesh level;
 	//glm::mat4 monkeyTransform;
@@ -87,7 +89,7 @@ public:
 	//float monkeyScale = 1.f;
 	//glm::mat4 monkey2Transform;
 	std::vector<glm::vec2> enemy1Loc =
-	{ 
+	{
 		{2.86804,	30.8909	},
 		{32.4772, 47.1091},
 		{63.368, 29.1091},
@@ -111,10 +113,33 @@ public:
 		{102.477, 64.0	},
 		{106.477, 64.0	},
 		{76.4771, 34.0	},
-		{80.4771, 34.0	} 
+		{80.4771, 34.0	},
+		{33.248	,34.821	   },
+		{29.131	,29.103	   },
+		{50.228	,12.264	   },
+		{111.795 ,17.262},
+		{115.858 ,17.976},
+		{106.910 ,37.245},
+		{136.785 ,55.583},
+		{111.646 ,63.259}
 	};
 
-	std::vector<glm::vec2> enemy2Loc =
+	std::vector < glm::vec2> enemy2Loc =
+	{
+		{34.544	,28.836	   },
+		{32.371	,18.886	   },
+		{96.425	,22.153	   },
+		{99.169	,19.952	   },
+		{99.553	,22.368	   },
+		{101.694	,21.489},
+		{130.350	,16.604},
+		{137.761	,16.219},
+		{119.206	,27.034},
+		{119.045	,53.868},
+		{103.488	,52.919}
+
+	};
+	std::vector<glm::vec2> enemy3Loc =
 	{
 		{ 67.368, 15.1091 },
 		{ 51.5863, 44.8909 },
@@ -123,7 +148,10 @@ public:
 		{ 141.368, 58.0 },
 		{ 101.586, 64.0 },
 		{ 102.477, 36.0 },
-		{ 79.368, 64.0 }
+		{ 79.368, 64.0 } ,
+		{71.923	,22.586	   },
+		{147.219	,36.128},
+		{149.117	,62.974}
 	};
 
 private:

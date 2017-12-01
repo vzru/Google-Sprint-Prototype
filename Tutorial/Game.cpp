@@ -52,10 +52,11 @@ void Game::initializeGame()
 	bullet.loadMesh("meshes/bullet.obj");
 	//level.loadMesh("meshes/Level.obj");
 	level.loadMesh("meshes/Laboratory Level Triangulated.obj");
+	level.loadTexture("textures/lab_textures.png");
 	//level.loadMesh("meshes/screen.obj");
 	levelHitBox = LevelHitBox(PLAYER_RADIUS);
 	//levelHitBox.loadFromFile("meshes/Hitbox Base.obj");
-	levelHitBox.loadFromFile("meshes/Laboratory Base HitBoxes.obj");
+	levelHitBox.loadFromFile("meshes/Laboratory Level HitBoxes.obj");
 	hud.loadMesh("meshes/hud_plane.obj");
 	hud.loadTexture("textures/HUD.png");
 	screen.loadMesh("meshes/screen.obj");
@@ -72,6 +73,7 @@ void Game::initializeGame()
 	player.color = glm::vec4(1.f, 1.f, 1.f, 1.f);
 	player.cd = 1.f;
 	player.hp = 20.f;
+	player.damage = 2.5f;
 	hitboxes.color = glm::vec4(1.f, 0.f, 0.f, 1.f);
 	level.color = glm::vec4(0.f, 1.f, 0.f, 1.f);
 	bullet.hp = 0.05f;
@@ -119,6 +121,7 @@ void Game::initializeGame()
 	//hitboxes.transform = glm::translate(hitboxes.transform, { 2.f, 0.f, 0.f });
 
 	InitializeEnemy();
+	timeCounter = 0.f;
 
 	//for (int i = 0; i < enemy1Loc.size(); i++)
 	//{
@@ -165,6 +168,7 @@ void Game::update()
 		updateTimer->tick();
 
 		float deltaTime = updateTimer->getElapsedTimeSec();
+		timeCounter += deltaTime;
 		playerPos = player.transform * glm::vec4(0.f, 0.f, 0.f, 1.f);
 
 		if (clearLevel(exitGoal))
@@ -202,17 +206,18 @@ void Game::update()
 					{
 						if (distToEnemy > cos(bang - dang) * glm::length(diff))
 						{
-							distToEnemy = cos(bang - dang) * glm::length(diff);
-							if (distToEnemy > 0)
+							float tempDist = cos(bang - dang) * glm::length(diff);
+							if (tempDist > 0.f && tempDist < 30.f)
 							{
 								enemy = enemies[j];
 							}
 						}
+						distToEnemy = cos(bang - dang) * glm::length(diff);
 					}
 					//std::cout << enemies[j]->hp << ';' << dist << ':' << distToEnemy << ':' << glm::degrees(bang) << std::endl;
 				}
 				if (enemy != nullptr) {
-					enemy->hp--;
+					enemy->hp -= player.damage;
 					enemy->hit = true;
 					bullets[i]->cd = 1.f;
 				}
@@ -471,7 +476,7 @@ void Game::draw()
 	else if (GameState == state::GAME)
 	{
 		player.draw(Phong, cameraTransform, cameraProjection);
-		level.draw(PhongNoTexture, cameraTransform, cameraProjection);
+		level.draw(Phong, cameraTransform, cameraProjection);
 		//std::cout << hud.color.w << std::endl;
 		hud.draw(Phong, cameraTransform, cameraProjection);
 		hpbar.draw(PhongNoTexture, cameraTransform, cameraProjection);
@@ -645,7 +650,7 @@ void Game::mousePassive(int x, int y)
 	//std::cout << glm::degrees((float)atan2(WINDOW_HEIGHT / 2 - y, x - WINDOW_WIDTH / 2)) << std::endl;
 	//std::cout << glm::normalize(glm::vec2((float)x, (float)y)).x << " / " << glm::normalize(glm::vec2((float)x, (float)y)).y << std::endl;
 	//std::cout << (x - WINDOW_WIDTH / 2)  << " / " << (WINDOW_HEIGHT / 2 - y) << std::endl;
-
+	std::cout << x << '/' << y << std::endl;
 }
 
 bool Game::clearLevel(glm::vec4 goal)
@@ -659,23 +664,23 @@ bool Game::clearLevel(glm::vec4 goal)
 
 void Game::InitializeEnemy()
 {
-	for (int i = 0; i < enemy1Loc.size(); i++)
+	for (int i = 0; i < enemy2Loc.size(); i++)
 	{
 		GameObject* enemy = new GameObject(enemyLoadIn);
 		enemy->color = glm::vec4(0.5f, 0.5f, 0.5f, 1.0f);
-		enemy->translate = glm::translate(glm::mat4(), glm::vec3(enemy1Loc[i].x, 0.f, enemy1Loc[i].y));
+		enemy->translate = glm::translate(glm::mat4(), glm::vec3(enemy2Loc[i].x, 0.f, enemy2Loc[i].y));
 		enemy->damage = 3.f;
-		enemy->hp = 8.f;
+		enemy->hp = 20.f;
 		enemy->speed = 3.f;
 		enemies.push_back(enemy);
 	}
-	for (int i = 0; i < enemy2Loc.size(); i++)
+	for (int i = 0; i < enemy3Loc.size(); i++)
 	{
 		GameObject* enemyTemp = new GameObject(enemy1);
 		enemyTemp->color = glm::vec4(1.f, 0.5f, 0.5f, 1.0f);
-		enemyTemp->translate = glm::translate(glm::mat4(), glm::vec3(enemy2Loc[i].x, 0.f, enemy2Loc[i].y));
+		enemyTemp->translate = glm::translate(glm::mat4(), glm::vec3(enemy3Loc[i].x, 0.f, enemy3Loc[i].y));
 		enemyTemp->damage = 5.f;
-		enemyTemp->hp = 3.f;
+		enemyTemp->hp = 10.f;
 		enemyTemp->speed = 5.f;
 		enemies.push_back(enemyTemp);
 	}
@@ -685,7 +690,7 @@ void Game::InitializeEnemy()
 		enemyTemp2->color = glm::vec4(1.f, 0.5f, 0.5f, 1.0f);
 		enemyTemp2->translate = glm::translate(glm::mat4(), glm::vec3(enemy1Loc[i].x, 0.f, enemy1Loc[i].y));
 		enemyTemp2->damage = 1.f;
-		enemyTemp2->hp = 5.f;
+		enemyTemp2->hp = 15.f;
 		enemyTemp2->speed = 4.f;
 		enemies.push_back(enemyTemp2);
 	}
@@ -706,7 +711,12 @@ void Game::Death()
 	hpbar.translate = glm::translate(hud.translate, { -1.89f, -0.5f, 0.915f });
 	player.hp = 20.f;
 	player.cd = 1.f;
-
+	timeCounter = 0.f;
+	for (int i = 0; i < enemies.size(); i++)
+	{
+		delete enemies[i];
+		enemies.erase(i + enemies.begin());
+	}
 	InitializeEnemy();
 	//hud.scale = 0.35f;
 	//std::cout << "YOU LOSE" << std::endl;
@@ -715,6 +725,7 @@ void Game::Death()
 
 void Game::Win()
 {
+	std::cout << timeCounter / 60.f << "min " << std::endl;
 	GameState = WIN;
 	player.translate = glm::translate(glm::mat4(), { 4.f, 0.f, 6.f });
 	cameraTransform = glm::rotate(glm::mat4(), glm::radians(70.0f), glm::vec3(1.f, 0.f, 0.f));
@@ -728,7 +739,13 @@ void Game::Win()
 	hpbar.translate = glm::translate(hud.translate, { -1.89f, -0.5f, 0.915f });
 	player.hp = 20.f;
 	player.cd = 1.f;
+	timeCounter = 0.f;
+	for (int i = 0; i < enemies.size(); i++)
+	{
 
+		delete enemies[i];
+		enemies.erase(i + enemies.begin());
+	}
 	InitializeEnemy();
 
 	//hud.scale = 0.35f;
